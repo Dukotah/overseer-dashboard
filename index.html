@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Overseer · live project status</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--ink:#e6edf3;--muted:#8b949e;--grn:#3fb950;--yel:#d29922;--red:#f85149;--cyn:#58a6ff;--violet:#bc8cff}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 18px 64px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+h1{font-size:20px;margin:0}
+.sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
+.sub a{color:var(--cyn);text-decoration:none}
+.sub a:hover{text-decoration:underline}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}
+button{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+button:hover{border-color:var(--cyn)}
+.muted{color:var(--muted)}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:26px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:10px;padding:13px 15px}
+.card.deploys{border-left-color:var(--red)}
+.card.nodeploy{border-left-color:var(--grn)}
+.card.support{border-left-color:#6e7681}
+.chead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.chead h3{margin:0;font-size:15.5px}
+.chead h3 a{color:var(--ink);text-decoration:none}
+.chead h3 a:hover{color:var(--cyn)}
+.branch{font:11.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--cyn)}
+.note{color:var(--muted);font-size:12px;margin:3px 0 9px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px}
+.badge{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.b-deploy{color:#ffb4ac;border-color:#7a2620;background:#2a1513}
+.b-nodeploy{color:var(--grn);border-color:#1f6f33}
+.b-ov{color:var(--violet);border-color:#5a3a9e}
+.b-stale{color:var(--yel);border-color:#7a5b14}
+.commit{font:11.5px ui-monospace,Menlo,monospace;color:var(--muted);margin:6px 0 0;word-break:break-word}
+.commit b{color:var(--ink);font-weight:600}
+ul.todo{list-style:none;padding:0;margin:0}
+ul.todo li{padding:9px 12px;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;font-size:13px}
+ul.todo li b{color:var(--yel)}
+.run{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.run pre{white-space:pre-wrap;color:var(--muted);font:12px ui-monospace,Menlo,monospace;margin:8px 0 0;max-height:260px;overflow:auto}
+.foot{color:var(--muted);font-size:11.5px;margin-top:34px;border-top:1px solid var(--line);padding-top:14px}
+.err{color:var(--red);font-size:12px}
+.spin{color:var(--muted);font-size:13px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Overseer <span class="muted" style="font-weight:400">· live status</span></h1>
+      <p class="sub">GitHub-side truth for every project · <a href="https://claude.ai/code/routines/trig_014XPBhL62SX3vh5qei8oNPe" target="_blank" rel="noopener">manage daily routine ↗</a></p>
+    </div>
+    <div class="sub" id="updated">—</div>
+  </header>
+
+  <div class="bar">
+    <button id="refresh">↻ Refresh</button>
+    <span class="muted" id="rate"></span>
+  </div>
+
+  <h2>Active projects</h2>
+  <div class="grid" id="active"><div class="spin">Loading…</div></div>
+
+  <h2>Supporting</h2>
+  <div class="grid" id="support"></div>
+
+  <h2>Owner action list <span class="muted" style="text-transform:none;letter-spacing:0">— things only you can do (from OVERSEER.md)</span></h2>
+  <ul class="todo" id="actions"><li class="spin">Loading OVERSEER.md…</li></ul>
+
+  <h2>Latest overseer run</h2>
+  <div class="run" id="run"><span class="spin">Checking master-prompts/runs…</span></div>
+
+  <p class="foot">
+    Live from the GitHub API in your browser — no server, no build, hosted free on GitHub Pages.
+    Shows what's <b>on GitHub</b> (branches, commits, the brief, run reports); it can't see your laptop's
+    uncommitted/unpushed work — run <code>overseer.bat</code> locally for that. Auto-refreshes every 5&nbsp;min.
+  </p>
+</div>
+
+<script>
+const OWNER = "Dukotah";
+// canonical repo names (GitHub renamed duke→Duke, websites→Websites)
+const ACTIVE = [
+  {repo:"boots",                   deploys:true,  note:"Cantrip — gamified coding academy"},
+  {repo:"Websites",                deploys:true,  note:"outreach demo-site factory"},
+  {repo:"Duke",                    deploys:true,  note:"Copper Bay Tech agency site"},
+  {repo:"marina-booking-platform", deploys:true,  note:"multi-tenant booking SaaS"},
+  {repo:"apex-quant",              deploys:false, note:"algo-trading framework (CI cron)"},
+];
+const SUPPORT = [
+  {repo:"master-prompts",      deploys:false, note:"prompt library + OVERSEER.md home", support:true},
+  {repo:"sonoma-lead-scraper", deploys:false, note:"lead scraper → Duke CRM", support:true},
+];
+const BRIEF_RAW = `https://raw.githubusercontent.com/${OWNER}/master-prompts/main/OVERSEER.md`;
+
+const gh = (path) => fetch(`https://api.github.com/repos/${OWNER}/${path}`, {headers:{Accept:"application/vnd.github+json"}});
+const esc = s => String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const ago = iso => {
+  const s = Math.floor((Date.now()-new Date(iso))/1000);
+  const u = [[31536000,"y"],[2592000,"mo"],[604800,"w"],[86400,"d"],[3600,"h"],[60,"m"]];
+  for(const [sec,l] of u){ if(s>=sec) return Math.floor(s/sec)+l+" ago"; }
+  return "just now";
+};
+
+async function loadRepo(r){
+  try{
+    const [metaRes, commitsRes, branchesRes] = await Promise.all([
+      gh(`${r.repo}`), gh(`${r.repo}/commits?per_page=1`), gh(`${r.repo}/branches?per_page=100`)
+    ]);
+    if(!metaRes.ok) throw new Error(`HTTP ${metaRes.status}`);
+    const meta = await metaRes.json();
+    const commits = commitsRes.ok ? await commitsRes.json() : [];
+    const branches = branchesRes.ok ? await branchesRes.json() : [];
+    const last = commits[0];
+    const def = meta.default_branch;
+    const ov = branches.filter(b=>/^overseer\//.test(b.name)).map(b=>b.name);
+    const feature = branches.filter(b=>b.name!==def && !/^overseer\//.test(b.name)).map(b=>b.name);
+    const stale = Date.now()-new Date(meta.pushed_at) > 1000*60*60*24*7;
+    return {...r, ok:true, def, ov, feature, stale,
+      last: last ? {sha:last.sha.slice(0,7), msg:(last.commit.message.split("\n")[0]), when:ago(last.commit.author.date)} : null,
+      pushed: meta.pushed_at};
+  }catch(e){ return {...r, ok:false, err:e.message}; }
+}
+
+function cardHtml(s){
+  const cls = s.support ? "support" : (s.deploys ? "deploys" : "nodeploy");
+  if(!s.ok) return `<div class="card ${cls}"><div class="chead"><h3>${esc(s.repo)}</h3></div><p class="err">couldn't load (${esc(s.err)})</p></div>`;
+  const chips = [];
+  chips.push(s.deploys ? `<span class="badge b-deploy">⚠ push main = deploy</span>` : `<span class="badge b-nodeploy">no deploy</span>`);
+  if(s.ov.length) chips.push(`<span class="badge b-ov">${s.ov.length} overseer branch${s.ov.length>1?"es":""}</span>`);
+  if(s.stale) chips.push(`<span class="badge b-stale">untouched &gt;7d</span>`);
+  const ovList = s.ov.length ? `<p class="commit" style="color:var(--violet)">to review: ${s.ov.map(esc).join(", ")}</p>` : "";
+  const feat = s.feature.length ? `<p class="commit">branches: ${s.feature.slice(0,4).map(esc).join(", ")}${s.feature.length>4?` +${s.feature.length-4}`:""}</p>` : "";
+  const commit = s.last ? `<p class="commit"><b>${esc(s.last.sha)}</b> · ${esc(s.last.when)} · ${esc(s.last.msg)}</p>` : "";
+  return `<div class="card ${cls}">
+    <div class="chead"><h3><a href="https://github.com/${OWNER}/${esc(s.repo)}" target="_blank" rel="noopener">${esc(s.repo)}</a></h3><span class="branch">${esc(s.def)}</span></div>
+    <p class="note">${esc(s.note)}</p>
+    <div class="chips">${chips.join("")}</div>
+    ${commit}${ovList}${feat}
+  </div>`;
+}
+
+function parseActions(md){
+  const m = md.match(/owner action list[\s\S]*?\n([\s\S]*)$/i);
+  if(!m) return [];
+  let body = m[1].split(/\n##\s/)[0];
+  const items=[];
+  for(const raw of body.split("\n")){
+    const line=raw.trim();
+    if(line.startsWith("- ")) items.push(line.replace(/^-\s+/,""));
+    else if(line && items.length) items[items.length-1]+=" "+line;
+  }
+  return items;
+}
+
+async function loadActions(){
+  const el = document.getElementById("actions");
+  try{
+    const md = await (await fetch(BRIEF_RAW+"?t="+Date.now())).text();
+    const items = parseActions(md);
+    el.innerHTML = items.length ? items.map(a=>`<li>${esc(a).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>")}</li>`).join("")
+      : `<li class="muted">No owner-action section parsed.</li>`;
+  }catch(e){ el.innerHTML = `<li class="err">Couldn't fetch OVERSEER.md (${esc(e.message)})</li>`; }
+}
+
+async function loadRun(){
+  const el = document.getElementById("run");
+  try{
+    const res = await gh("master-prompts/contents/runs");
+    if(res.status===404){ el.innerHTML = `<span class="muted">No runs yet — the routine first fires 6am PDT and writes its report here.</span>`; return; }
+    const files = (await res.json()).filter(f=>/^overseer-.*\.md$/.test(f.name)).sort((a,b)=>a.name<b.name?1:-1);
+    if(!files.length){ el.innerHTML = `<span class="muted">No run reports yet.</span>`; return; }
+    const newest = files[0];
+    const txt = await (await fetch(newest.download_url)).text();
+    el.innerHTML = `<b>${esc(newest.name)}</b> · <a href="${esc(newest.html_url)}" target="_blank" rel="noopener" style="color:var(--cyn)">open ↗</a><pre>${esc(txt.split("\n").slice(0,30).join("\n"))}</pre>`;
+  }catch(e){ el.innerHTML = `<span class="err">Couldn't read runs (${esc(e.message)})</span>`; }
+}
+
+async function loadRate(){
+  try{
+    const r = await (await fetch("https://api.github.com/rate_limit")).json();
+    const c = r.resources.core;
+    document.getElementById("rate").textContent = `GitHub API: ${c.remaining}/${c.limit} left`;
+  }catch{}
+}
+
+async function refresh(){
+  document.getElementById("updated").textContent = "updating…";
+  const [act, sup] = await Promise.all([
+    Promise.all(ACTIVE.map(loadRepo)),
+    Promise.all(SUPPORT.map(loadRepo)),
+  ]);
+  document.getElementById("active").innerHTML = act.map(cardHtml).join("");
+  document.getElementById("support").innerHTML = sup.map(cardHtml).join("");
+  await Promise.all([loadActions(), loadRun(), loadRate()]);
+  document.getElementById("updated").textContent = "updated " + new Date().toLocaleTimeString();
+}
+
+document.getElementById("refresh").addEventListener("click", refresh);
+refresh();
+setInterval(refresh, 5*60*1000);
+</script>
+</body>
+</html>
