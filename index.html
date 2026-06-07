@@ -7,48 +7,51 @@
 <title>Overseer · live project status</title>
 <style>
 :root{--bg:#0d1117;--card:#161b22;--line:#30363d;--ink:#e6edf3;--muted:#8b949e;--grn:#3fb950;--yel:#d29922;--red:#f85149;--cyn:#58a6ff;--violet:#bc8cff}
-*{box-sizing:border-box}
-html,body{margin:0}
+*{box-sizing:border-box}html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font:14px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-.wrap{max-width:1080px;margin:0 auto;padding:24px 18px 64px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 18px 64px}
 header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
 h1{font-size:20px;margin:0}
-.sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
-.sub a{color:var(--cyn);text-decoration:none}
-.sub a:hover{text-decoration:underline}
+.sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}.sub a{color:var(--cyn);text-decoration:none}.sub a:hover{text-decoration:underline}
+.summary{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0 2px;font-size:13px}
+.summary b{font-size:18px;font-weight:700}
+.summary .s{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 14px;min-width:96px}
+.summary .s span{color:var(--muted);font-size:11.5px}
 .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}
 button{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
 button:hover{border-color:var(--cyn)}
+input[type=password],input[type=text]{background:#0b0f14;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:12.5px;width:230px}
 .muted{color:var(--muted)}
 h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:26px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:13px}
 .card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:10px;padding:13px 15px}
-.card.deploys{border-left-color:var(--red)}
-.card.nodeploy{border-left-color:var(--grn)}
-.card.support{border-left-color:#6e7681}
-.chead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.chead h3{margin:0;font-size:15.5px}
-.chead h3 a{color:var(--ink);text-decoration:none}
-.chead h3 a:hover{color:var(--cyn)}
+.card.deploys{border-left-color:var(--red)}.card.nodeploy{border-left-color:var(--grn)}.card.support{border-left-color:#6e7681}
+.chead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chead h3{margin:0;font-size:15.5px}.chead h3 a{color:var(--ink);text-decoration:none}.chead h3 a:hover{color:var(--cyn)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+.dot.ok{background:var(--grn)}.dot.bad{background:var(--red)}.dot.run{background:var(--yel)}.dot.none{background:#444}
 .branch{font:11.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--cyn)}
 .note{color:var(--muted);font-size:12px;margin:3px 0 9px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px}
 .badge{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
-.b-deploy{color:#ffb4ac;border-color:#7a2620;background:#2a1513}
-.b-nodeploy{color:var(--grn);border-color:#1f6f33}
-.b-ov{color:var(--violet);border-color:#5a3a9e}
-.b-stale{color:var(--yel);border-color:#7a5b14}
-.commit{font:11.5px ui-monospace,Menlo,monospace;color:var(--muted);margin:6px 0 0;word-break:break-word}
-.commit b{color:var(--ink);font-weight:600}
+.b-deploy{color:#ffb4ac;border-color:#7a2620;background:#2a1513}.b-nodeploy{color:var(--grn);border-color:#1f6f33}
+.b-ov{color:var(--violet);border-color:#5a3a9e}.b-stale{color:var(--yel);border-color:#7a5b14}.b-pr{color:var(--cyn);border-color:#1f4a80}
+.commit{font:11.5px ui-monospace,Menlo,monospace;color:var(--muted);margin:6px 0 0;word-break:break-word}.commit b{color:var(--ink);font-weight:600}
+.branches{margin:8px 0 0;font-size:12px}
+.brow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-top:1px dashed #21262d}
+.brow .bn{font:11.5px ui-monospace,Menlo,monospace;color:var(--cyn);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bn.ov{color:var(--violet)}
+.brow .ba{color:var(--muted);white-space:nowrap}.brow .ba b{color:var(--yel)}
+.prs{margin:8px 0 0;font-size:12px}.prs a{color:var(--cyn);text-decoration:none}.prs a:hover{text-decoration:underline}
 ul.todo{list-style:none;padding:0;margin:0}
 ul.todo li{padding:9px 12px;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;font-size:13px}
-ul.todo li b{color:var(--yel)}
+ul.todo li b{color:var(--yel)}ul.todo code{background:#0b0f14;padding:1px 5px;border-radius:5px;font-size:11.5px}
 .run{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
 .run pre{white-space:pre-wrap;color:var(--muted);font:12px ui-monospace,Menlo,monospace;margin:8px 0 0;max-height:260px;overflow:auto}
 .foot{color:var(--muted);font-size:11.5px;margin-top:34px;border-top:1px solid var(--line);padding-top:14px}
-.err{color:var(--red);font-size:12px}
-.spin{color:var(--muted);font-size:13px}
-@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.err{color:var(--red);font-size:12px}.spin{color:var(--muted);font-size:13px}
+.toknote{color:var(--muted);font-size:11.5px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}input[type=password]{width:160px}}
 </style>
 </head>
 <body>
@@ -61,9 +64,14 @@ ul.todo li b{color:var(--yel)}
     <div class="sub" id="updated">—</div>
   </header>
 
+  <div class="summary" id="summary"></div>
+
   <div class="bar">
     <button id="refresh">↻ Refresh</button>
-    <span class="muted" id="rate"></span>
+    <input id="token" type="password" placeholder="GitHub token (optional)" autocomplete="off">
+    <button id="savetok">Save</button>
+    <span class="toknote" id="toknote"></span>
+    <span class="muted" id="rate" style="margin-left:auto"></span>
   </div>
 
   <h2>Active projects</h2>
@@ -80,14 +88,16 @@ ul.todo li b{color:var(--yel)}
 
   <p class="foot">
     Live from the GitHub API in your browser — no server, no build, hosted free on GitHub Pages.
-    Shows what's <b>on GitHub</b> (branches, commits, the brief, run reports); it can't see your laptop's
-    uncommitted/unpushed work — run <code>overseer.bat</code> locally for that. Auto-refreshes every 5&nbsp;min.
+    Shows what's <b>on GitHub</b>: last commit, unmerged branches (with commit counts), open PRs, CI status,
+    the owner-action brief, and the latest overseer run. It can't see your laptop's uncommitted work —
+    run <code>overseer.bat</code> locally for that. <b>Add a GitHub token</b> (read-only; stored only in this
+    browser) to unlock private repos, PRs/CI, and a 5000/hr rate limit. Auto-refreshes (5&nbsp;min with a
+    token, 20&nbsp;min without).
   </p>
 </div>
 
 <script>
 const OWNER = "Dukotah";
-// canonical repo names (GitHub renamed duke→Duke, websites→Websites)
 const ACTIVE = [
   {repo:"boots",                   deploys:true,  note:"Cantrip — gamified coding academy"},
   {repo:"Websites",                deploys:true,  note:"outreach demo-site factory"},
@@ -98,115 +108,147 @@ const ACTIVE = [
 const SUPPORT = [
   {repo:"master-prompts",      deploys:false, note:"prompt library + OVERSEER.md home", support:true},
   {repo:"sonoma-lead-scraper", deploys:false, note:"lead scraper → Duke CRM", support:true},
+  {repo:"apex-trader",         deploys:true,  note:"private control surface for apex-quant", support:true, private:true},
 ];
 const BRIEF_RAW = `https://raw.githubusercontent.com/${OWNER}/master-prompts/main/OVERSEER.md`;
 
-const gh = (path) => fetch(`https://api.github.com/repos/${OWNER}/${path}`, {headers:{Accept:"application/vnd.github+json"}});
+let TOKEN = localStorage.getItem("gh_token") || "";
+const hdr = () => { const h = {Accept:"application/vnd.github+json"}; if(TOKEN) h.Authorization = "Bearer "+TOKEN; return h; };
+const gh = (path) => fetch(`https://api.github.com/repos/${OWNER}/${path}`, {headers:hdr()});
 const esc = s => String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-const ago = iso => {
-  const s = Math.floor((Date.now()-new Date(iso))/1000);
-  const u = [[31536000,"y"],[2592000,"mo"],[604800,"w"],[86400,"d"],[3600,"h"],[60,"m"]];
-  for(const [sec,l] of u){ if(s>=sec) return Math.floor(s/sec)+l+" ago"; }
-  return "just now";
-};
+const ago = iso => { const s=Math.floor((Date.now()-new Date(iso))/1000); for(const [sec,l] of [[31536000,"y"],[2592000,"mo"],[604800,"w"],[86400,"d"],[3600,"h"],[60,"m"]]) if(s>=sec) return Math.floor(s/sec)+l+" ago"; return "just now"; };
+
+let TOTALS = {repos:0, unmerged:0, ov:0, prs:0, ciBad:0};
 
 async function loadRepo(r){
   try{
-    const [metaRes, commitsRes, branchesRes] = await Promise.all([
-      gh(`${r.repo}`), gh(`${r.repo}/commits?per_page=1`), gh(`${r.repo}/branches?per_page=100`)
-    ]);
-    if(!metaRes.ok) throw new Error(`HTTP ${metaRes.status}`);
-    const meta = await metaRes.json();
-    const commits = commitsRes.ok ? await commitsRes.json() : [];
-    const branches = branchesRes.ok ? await branchesRes.json() : [];
-    const last = commits[0];
+    const calls = [gh(`${r.repo}`), gh(`${r.repo}/commits?per_page=1`), gh(`${r.repo}/branches?per_page=100`)];
+    if(TOKEN){ calls.push(gh(`${r.repo}/pulls?state=open&per_page=10`)); calls.push(gh(`${r.repo}/actions/runs?per_page=1`)); }
+    const res = await Promise.all(calls);
+    if(!res[0].ok) throw new Error(`HTTP ${res[0].status}`);
+    const meta = await res[0].json();
+    const commits = res[1].ok ? await res[1].json() : [];
+    const branches = res[2].ok ? await res[2].json() : [];
+    const prs = (TOKEN && res[3] && res[3].ok) ? await res[3].json() : [];
+    const runsJson = (TOKEN && res[4] && res[4].ok) ? await res[4].json() : null;
+    const ci = runsJson && runsJson.workflow_runs && runsJson.workflow_runs[0] ? runsJson.workflow_runs[0] : null;
     const def = meta.default_branch;
-    const ov = branches.filter(b=>/^overseer\//.test(b.name)).map(b=>b.name);
-    const feature = branches.filter(b=>b.name!==def && !/^overseer\//.test(b.name)).map(b=>b.name);
-    const stale = Date.now()-new Date(meta.pushed_at) > 1000*60*60*24*7;
-    return {...r, ok:true, def, ov, feature, stale,
-      last: last ? {sha:last.sha.slice(0,7), msg:(last.commit.message.split("\n")[0]), when:ago(last.commit.author.date)} : null,
-      pushed: meta.pushed_at};
+    const last = commits[0];
+
+    // ahead-of-default for each non-default branch (capped 8)
+    const others = branches.filter(b=>b.name!==def).slice(0,8);
+    const compared = await Promise.all(others.map(async b=>{
+      try{ const c = await gh(`${r.repo}/compare/${encodeURIComponent(def)}...${encodeURIComponent(b.name)}`);
+        if(!c.ok) return {name:b.name, ahead:null}; const j = await c.json(); return {name:b.name, ahead:j.ahead_by, behind:j.behind_by};
+      }catch{ return {name:b.name, ahead:null}; }
+    }));
+    compared.sort((a,b)=>(b.ahead||0)-(a.ahead||0));
+
+    return {...r, ok:true, def, last: last?{sha:last.sha.slice(0,7),msg:last.commit.message.split("\n")[0],when:ago(last.commit.author.date)}:null,
+      branches:compared, prs, ci, stale: Date.now()-new Date(meta.pushed_at) > 6048e5};
   }catch(e){ return {...r, ok:false, err:e.message}; }
+}
+
+function ciDot(ci){
+  if(!TOKEN) return "";
+  if(!ci) return `<span class="dot none" title="no CI runs"></span>`;
+  const c = ci.status==="completed" ? ci.conclusion : ci.status;
+  const k = c==="success"?"ok":(c==="failure"||c==="timed_out"||c==="cancelled")?"bad":"run";
+  return `<span class="dot ${k}" title="CI: ${esc(c)} (${esc(ci.name||"")})"></span>`;
 }
 
 function cardHtml(s){
   const cls = s.support ? "support" : (s.deploys ? "deploys" : "nodeploy");
-  if(!s.ok) return `<div class="card ${cls}"><div class="chead"><h3>${esc(s.repo)}</h3></div><p class="err">couldn't load (${esc(s.err)})</p></div>`;
-  const chips = [];
-  chips.push(s.deploys ? `<span class="badge b-deploy">⚠ push main = deploy</span>` : `<span class="badge b-nodeploy">no deploy</span>`);
-  if(s.ov.length) chips.push(`<span class="badge b-ov">${s.ov.length} overseer branch${s.ov.length>1?"es":""}</span>`);
+  if(!s.ok) return `<div class="card ${cls}"><div class="chead"><h3>${esc(s.repo)}</h3></div><p class="err">${s.private&&!TOKEN?"private — add a token to view":"couldn't load ("+esc(s.err)+")"}</p></div>`;
+  TOTALS.repos++;
+  const ovBranches = s.branches.filter(b=>/^overseer\//.test(b.name));
+  TOTALS.ov += ovBranches.length;
+  TOTALS.unmerged += s.branches.reduce((n,b)=>n+(b.ahead||0),0);
+  TOTALS.prs += (s.prs||[]).length;
+  if(TOKEN && s.ci && s.ci.conclusion==="failure") TOTALS.ciBad++;
+
+  const chips=[];
+  chips.push(s.deploys?`<span class="badge b-deploy">⚠ push main = deploy</span>`:`<span class="badge b-nodeploy">no deploy</span>`);
+  if(ovBranches.length) chips.push(`<span class="badge b-ov">${ovBranches.length} overseer ↦ review</span>`);
+  if((s.prs||[]).length) chips.push(`<span class="badge b-pr">${s.prs.length} open PR${s.prs.length>1?"s":""}</span>`);
   if(s.stale) chips.push(`<span class="badge b-stale">untouched &gt;7d</span>`);
-  const ovList = s.ov.length ? `<p class="commit" style="color:var(--violet)">to review: ${s.ov.map(esc).join(", ")}</p>` : "";
-  const feat = s.feature.length ? `<p class="commit">branches: ${s.feature.slice(0,4).map(esc).join(", ")}${s.feature.length>4?` +${s.feature.length-4}`:""}</p>` : "";
-  const commit = s.last ? `<p class="commit"><b>${esc(s.last.sha)}</b> · ${esc(s.last.when)} · ${esc(s.last.msg)}</p>` : "";
+
+  const commit = s.last?`<p class="commit"><b>${esc(s.last.sha)}</b> · ${esc(s.last.when)} · ${esc(s.last.msg)}</p>`:"";
+  const brows = s.branches.filter(b=>b.ahead===null||b.ahead>0).map(b=>{
+    const isOv=/^overseer\//.test(b.name);
+    const cnt = b.ahead===null?`<span class="ba">?</span>`:`<span class="ba"><b>${b.ahead}</b> ahead${b.behind?` · ${b.behind} behind`:""}</span>`;
+    return `<div class="brow"><span class="bn ${isOv?"ov":""}">${esc(b.name)}</span>${cnt}</div>`;
+  }).join("");
+  const branchesBlock = brows?`<div class="branches"><span class="muted" style="font-size:11px">unmerged branches → ${esc(s.def)}</span>${brows}</div>`:"";
+  const prsBlock = (s.prs||[]).length?`<div class="prs">${s.prs.map(p=>`#${p.number} <a href="${esc(p.html_url)}" target="_blank" rel="noopener">${esc(p.title)}</a>`).join("<br>")}</div>`:"";
+
   return `<div class="card ${cls}">
-    <div class="chead"><h3><a href="https://github.com/${OWNER}/${esc(s.repo)}" target="_blank" rel="noopener">${esc(s.repo)}</a></h3><span class="branch">${esc(s.def)}</span></div>
+    <div class="chead"><h3>${ciDot(s.ci)}<a href="https://github.com/${OWNER}/${esc(s.repo)}" target="_blank" rel="noopener">${esc(s.repo)}</a></h3><span class="branch">${esc(s.def)}</span></div>
     <p class="note">${esc(s.note)}</p>
     <div class="chips">${chips.join("")}</div>
-    ${commit}${ovList}${feat}
+    ${commit}${branchesBlock}${prsBlock}
   </div>`;
 }
 
 function parseActions(md){
-  const m = md.match(/owner action list[\s\S]*?\n([\s\S]*)$/i);
-  if(!m) return [];
-  let body = m[1].split(/\n##\s/)[0];
-  const items=[];
-  for(const raw of body.split("\n")){
-    const line=raw.trim();
-    if(line.startsWith("- ")) items.push(line.replace(/^-\s+/,""));
-    else if(line && items.length) items[items.length-1]+=" "+line;
-  }
+  const m = md.match(/owner action list[\s\S]*?\n([\s\S]*)$/i); if(!m) return [];
+  let body = m[1].split(/\n##\s/)[0]; const items=[];
+  for(const raw of body.split("\n")){ const line=raw.trim();
+    if(line.startsWith("- ")) items.push(line.replace(/^-\s+/,"")); else if(line && items.length) items[items.length-1]+=" "+line; }
   return items;
 }
-
 async function loadActions(){
   const el = document.getElementById("actions");
-  try{
-    const md = await (await fetch(BRIEF_RAW+"?t="+Date.now())).text();
-    const items = parseActions(md);
-    el.innerHTML = items.length ? items.map(a=>`<li>${esc(a).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>")}</li>`).join("")
-      : `<li class="muted">No owner-action section parsed.</li>`;
+  try{ const md = await (await fetch(BRIEF_RAW+"?t="+Date.now())).text(); const items = parseActions(md);
+    el.innerHTML = items.length?items.map(a=>`<li>${esc(a).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>")}</li>`).join(""):`<li class="muted">No owner-action section parsed.</li>`;
   }catch(e){ el.innerHTML = `<li class="err">Couldn't fetch OVERSEER.md (${esc(e.message)})</li>`; }
 }
-
 async function loadRun(){
   const el = document.getElementById("run");
-  try{
-    const res = await gh("master-prompts/contents/runs");
+  try{ const res = await gh("master-prompts/contents/runs");
     if(res.status===404){ el.innerHTML = `<span class="muted">No runs yet — the routine first fires 6am PDT and writes its report here.</span>`; return; }
     const files = (await res.json()).filter(f=>/^overseer-.*\.md$/.test(f.name)).sort((a,b)=>a.name<b.name?1:-1);
     if(!files.length){ el.innerHTML = `<span class="muted">No run reports yet.</span>`; return; }
-    const newest = files[0];
-    const txt = await (await fetch(newest.download_url)).text();
-    el.innerHTML = `<b>${esc(newest.name)}</b> · <a href="${esc(newest.html_url)}" target="_blank" rel="noopener" style="color:var(--cyn)">open ↗</a><pre>${esc(txt.split("\n").slice(0,30).join("\n"))}</pre>`;
+    const n = files[0]; const txt = await (await fetch(n.download_url)).text();
+    el.innerHTML = `<b>${esc(n.name)}</b> · <a href="${esc(n.html_url)}" target="_blank" rel="noopener" style="color:var(--cyn)">open ↗</a><pre>${esc(txt.split("\n").slice(0,30).join("\n"))}</pre>`;
   }catch(e){ el.innerHTML = `<span class="err">Couldn't read runs (${esc(e.message)})</span>`; }
 }
-
 async function loadRate(){
-  try{
-    const r = await (await fetch("https://api.github.com/rate_limit")).json();
-    const c = r.resources.core;
-    document.getElementById("rate").textContent = `GitHub API: ${c.remaining}/${c.limit} left`;
+  try{ const r = await (await fetch("https://api.github.com/rate_limit",{headers:hdr()})).json(); const c = r.resources.core;
+    document.getElementById("rate").textContent = `API: ${c.remaining}/${c.limit}`;
+    if(c.remaining<8) document.getElementById("rate").style.color="var(--red)"; else document.getElementById("rate").style.color="";
   }catch{}
+}
+function renderSummary(){
+  document.getElementById("summary").innerHTML =
+    `<div class="s"><b>${TOTALS.repos}</b><span>repos tracked</span></div>
+     <div class="s"><b style="color:var(--yel)">${TOTALS.unmerged}</b><span>commits unmerged to main</span></div>
+     <div class="s"><b style="color:var(--violet)">${TOTALS.ov}</b><span>overseer branches</span></div>
+     ${TOKEN?`<div class="s"><b style="color:var(--cyn)">${TOTALS.prs}</b><span>open PRs</span></div><div class="s"><b style="color:${TOTALS.ciBad?'var(--red)':'var(--grn)'}">${TOTALS.ciBad}</b><span>CI failing</span></div>`:""}`;
 }
 
 async function refresh(){
   document.getElementById("updated").textContent = "updating…";
-  const [act, sup] = await Promise.all([
-    Promise.all(ACTIVE.map(loadRepo)),
-    Promise.all(SUPPORT.map(loadRepo)),
-  ]);
+  TOTALS = {repos:0, unmerged:0, ov:0, prs:0, ciBad:0};
+  const [act, sup] = await Promise.all([Promise.all(ACTIVE.map(loadRepo)), Promise.all(SUPPORT.map(loadRepo))]);
   document.getElementById("active").innerHTML = act.map(cardHtml).join("");
   document.getElementById("support").innerHTML = sup.map(cardHtml).join("");
+  renderSummary();
   await Promise.all([loadActions(), loadRun(), loadRate()]);
   document.getElementById("updated").textContent = "updated " + new Date().toLocaleTimeString();
 }
 
+// token UI
+const toknote = () => document.getElementById("toknote").textContent = TOKEN ? "token set ✓ (private + PRs/CI on)" : "public-only, 60/hr";
+document.getElementById("savetok").addEventListener("click", ()=>{
+  const v = document.getElementById("token").value.trim();
+  if(v){ TOKEN=v; localStorage.setItem("gh_token",v); } else { TOKEN=""; localStorage.removeItem("gh_token"); }
+  document.getElementById("token").value=""; toknote(); scheduleRefresh(); refresh();
+});
 document.getElementById("refresh").addEventListener("click", refresh);
-refresh();
-setInterval(refresh, 5*60*1000);
+let timer; function scheduleRefresh(){ clearInterval(timer); timer=setInterval(refresh, (TOKEN?5:20)*60*1000); }
+
+toknote(); scheduleRefresh(); refresh();
 </script>
 </body>
 </html>
