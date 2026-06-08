@@ -1,0 +1,24 @@
+{
+  "owner": "Dukotah",
+  "active": [
+    { "repo": "boots",                   "deploys": true,  "note": "Cantrip — gamified coding academy" },
+    { "repo": "Websites",                "deploys": true,  "note": "outreach demo-site factory" },
+    { "repo": "Duke",                    "deploys": true,  "note": "Copper Bay Tech agency site" },
+    { "repo": "marina-booking-platform", "deploys": true,  "note": "multi-tenant booking SaaS" },
+    { "repo": "apex-quant",              "deploys": false, "note": "algo-trading framework (CI cron)" }
+  ],
+  "support": [
+    { "repo": "master-prompts",      "deploys": false, "note": "prompt library + OVERSEER.md home", "support": true },
+    { "repo": "sonoma-lead-scraper", "deploys": false, "note": "lead scraper → Duke CRM", "support": true },
+    { "repo": "apex-trader",         "deploys": true,  "note": "private control surface for apex-quant", "support": true, "private": true },
+    { "repo": "forge",               "deploys": false, "note": "autonomous product factory (Scout → greenlight → build)", "support": true }
+  ],
+  "labs": [
+    { "repo": "shipsafe",   "emoji": "🛟",  "liveUrl": "https://dukotah.github.io/shipsafe/" },
+    { "repo": "quotepilot", "emoji": "🏷️", "liveUrl": "https://dukotah.github.io/quotepilot/" }
+  ],
+  "forge": { "repo": "forge", "ideasPath": "ideas.json", "configPath": "forge.config.json", "branch": "main" },
+  "brief": { "repo": "master-prompts", "path": "OVERSEER.md", "branch": "main" },
+  "runs":  { "repo": "master-prompts", "path": "runs" },
+  "maxBranchCompares": 12
+}

@@ -1,0 +1,48 @@
+name: refresh-status
+
+# Pre-compute the dashboard's data server-side and commit data/status.json.
+# The browser then loads that single static file — no GitHub API calls from the
+# page, so the 60/hr unauthenticated rate limit can never break the dashboard.
+on:
+  schedule:
+    - cron: "*/10 * * * *"     # every 10 min (best-effort; GitHub often delays)
+  workflow_dispatch: {}         # manual "run now"
+  push:
+    branches: ["**"]
+    paths-ignore:
+      - "data/**"               # the bot's own data commit must not retrigger
+      - "**.md"
+
+permissions:
+  contents: write               # commit status.json back to the repo
+
+concurrency:
+  group: refresh-status-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Collect GitHub status
+        env:
+          # GITHUB_TOKEN is auto-provisioned (public repos + this repo's privates).
+          # Add a DASHBOARD_PAT repo secret later to also read other private repos.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DASHBOARD_PAT: ${{ secrets.DASHBOARD_PAT }}
+        run: node scripts/collect.mjs
+      - name: Commit if changed
+        run: |
+          git config user.name  "overseer-bot"
+          git config user.email "overseer-bot@users.noreply.github.com"
+          git add data/status.json
+          if git diff --staged --quiet; then
+            echo "No change in status.json"
+          else
+            git commit -m "chore(data): refresh status.json [skip ci]"
+            git push
+          fi

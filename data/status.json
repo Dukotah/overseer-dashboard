@@ -1,0 +1,333 @@
+{
+  "generatedAt": "2026-06-08T18:37:45.398Z",
+  "owner": "Dukotah",
+  "authed": false,
+  "active": [],
+  "support": [],
+  "labs": [
+    {
+      "repo": "shipsafe",
+      "emoji": "🛟",
+      "liveUrl": "https://dukotah.github.io/shipsafe/",
+      "repoData": null,
+      "idea": {
+        "id": "vibe-app-health-checker",
+        "title": "Vibe-Coded App Health Checker",
+        "oneliner": "Paste a URL and get a plain-English report on ADA/WCAG gaps, missing privacy policy/cookie banner, broken schema, and demand-letter risk.",
+        "problem": "Lovable/Bolt/v0/Cursor produced an explosion of apps from non-devs who ship zero WCAG compliance (4,600+ ADA suits in 2024), no privacy policy, and broken ARIA. They don't find out until a demand letter arrives. Existing checkers (WAVE, axe, Lighthouse) are dev-facing and never cover legal/privacy in plain language.",
+        "who": "Hundreds of thousands of indie / no-code builders shipping AI-generated sites; Copper Bay's own client-site audits; Boots students.",
+        "gap": "WAVE/axe/Lighthouse/SortSite all exist and are free, but NONE combine accessibility + privacy-policy detection + schema validation + plain-English demand-letter risk framing in one non-technical report. Vibe coders google 'is my website ADA compliant', not 'run axe-core'. The wedge is framing + combined output, not another scanner.",
+        "score": 79,
+        "breakdown": {
+          "demand": 21,
+          "gap": 18,
+          "buildable": 16,
+          "distribution": 14,
+          "monetization": 7,
+          "defensibility": 3
+        },
+        "buildPlan": "Serverless fetch on Vercel wraps Lighthouse + public W3C validators + a privacy-policy/cookie-banner string detector + schema.org structured-data check. Output is a single plain-English risk report card, not a dev dump. ~1 week MVP. Paid tier: $9/mo scheduled re-checks via cron/KV.",
+        "deployTarget": "vercel-free",
+        "needsOwner": [],
+        "brandName": "ShipSafe",
+        "status": "shipped",
+        "liveUrl": "https://dukotah.github.io/shipsafe/",
+        "repo": "https://github.com/Dukotah/shipsafe",
+        "createdSession": "2026-06-07",
+        "notes": "Validator KEEP at 79. Only risk: several multi-check free tools (SortSite checks a11y+SEO). Do NOT build another WAVE clone — win entirely on the non-technical legal-risk framing and combined output. Strongest confidence in the set; perfect ProductHunt/Discord/dev-SEO fit ('Is my Lovable app ADA-compliant?' is zero-competition SEO). Build first."
+      }
+    },
+    {
+      "repo": "quotepilot",
+      "emoji": "🏷️",
+      "liveUrl": "https://dukotah.github.io/quotepilot/",
+      "repoData": null,
+      "idea": {
+        "id": "contractor-quote-page-agency-install",
+        "title": "Contractor Instant-Quote Page (agency-install)",
+        "oneliner": "A done-for-you, pre-configured ballpark-estimate page for a specific trade vertical that qualifies inbound leads before the phone call and emails the contractor pre-filled answers.",
+        "problem": "Trades waste ~15 min/call on 'how much for X?' tire-kickers. Field-service suites (Jobber/Housecall, $49-199/mo) force the whole business onto a platform when the real pain is one narrow page.",
+        "who": "Plumbers, HVAC, landscapers, electricians, painters — Copper Bay's core trades client base in Sonoma County.",
+        "gap": "Generic DIY quote-widget builders already exist and are free (CalcWidget, ConvertCalculator, CALCONIC, QuoteIQ). So the build-your-own SaaS angle is dead. The surviving wedge is 'we set it up for you for your trade and you own it' — an agency-delivered product, not a self-serve builder.",
+        "score": 74,
+        "breakdown": {
+          "demand": 22,
+          "gap": 13,
+          "buildable": 18,
+          "distribution": 13,
+          "monetization": 6,
+          "defensibility": 2
+        },
+        "buildPlan": "JSON-driven question tree -> ballpark range -> lead email via Resend, delivered as a pre-built embed snippet per trade. 2-day build. Sold as a fixed-fee agency setup + small monthly hosting/support, not a SaaS subscription.",
+        "deployTarget": "vercel-free",
+        "needsOwner": [
+          "Resend (lead email)"
+        ],
+        "brandName": "QuotePilot",
+        "status": "shipped",
+        "liveUrl": "https://dukotah.github.io/quotepilot/",
+        "repo": "https://github.com/Dukotah/quotepilot",
+        "createdSession": "2026-06-07",
+        "notes": "Validator RESHAPE 84->74: free incumbents own the builder lane, so the 'no standalone qualifier exists' gap is false. Compete on done-for-you install + ownership through the Copper Bay channel, not features. Natural bundle with the Job-Completion Report into a trades stack."
+      }
+    }
+  ],
+  "forge": {
+    "ideas": [
+      {
+        "id": "vibe-app-health-checker",
+        "title": "Vibe-Coded App Health Checker",
+        "oneliner": "Paste a URL and get a plain-English report on ADA/WCAG gaps, missing privacy policy/cookie banner, broken schema, and demand-letter risk.",
+        "problem": "Lovable/Bolt/v0/Cursor produced an explosion of apps from non-devs who ship zero WCAG compliance (4,600+ ADA suits in 2024), no privacy policy, and broken ARIA. They don't find out until a demand letter arrives. Existing checkers (WAVE, axe, Lighthouse) are dev-facing and never cover legal/privacy in plain language.",
+        "who": "Hundreds of thousands of indie / no-code builders shipping AI-generated sites; Copper Bay's own client-site audits; Boots students.",
+        "gap": "WAVE/axe/Lighthouse/SortSite all exist and are free, but NONE combine accessibility + privacy-policy detection + schema validation + plain-English demand-letter risk framing in one non-technical report. Vibe coders google 'is my website ADA compliant', not 'run axe-core'. The wedge is framing + combined output, not another scanner.",
+        "score": 79,
+        "breakdown": {
+          "demand": 21,
+          "gap": 18,
+          "buildable": 16,
+          "distribution": 14,
+          "monetization": 7,
+          "defensibility": 3
+        },
+        "buildPlan": "Serverless fetch on Vercel wraps Lighthouse + public W3C validators + a privacy-policy/cookie-banner string detector + schema.org structured-data check. Output is a single plain-English risk report card, not a dev dump. ~1 week MVP. Paid tier: $9/mo scheduled re-checks via cron/KV.",
+        "deployTarget": "vercel-free",
+        "needsOwner": [],
+        "brandName": "ShipSafe",
+        "status": "shipped",
+        "liveUrl": "https://dukotah.github.io/shipsafe/",
+        "repo": "https://github.com/Dukotah/shipsafe",
+        "createdSession": "2026-06-07",
+        "notes": "Validator KEEP at 79. Only risk: several multi-check free tools (SortSite checks a11y+SEO). Do NOT build another WAVE clone — win entirely on the non-technical legal-risk framing and combined output. Strongest confidence in the set; perfect ProductHunt/Discord/dev-SEO fit ('Is my Lovable app ADA-compliant?' is zero-competition SEO). Build first."
+      },
+      {
+        "id": "reserveright-winery-charter",
+        "title": "ReserveRight (Winery & Charter edition)",
+        "oneliner": "A drop-in deposit-and-hold widget that collects a Stripe deposit and sends reminder texts for wine tastings, tours, and fishing/kayak charters — no platform migration.",
+        "problem": "No-shows destroy revenue on time-boxed experiences. OpenTable (TrustPilot 1.4) charges per-cover + $149-499/mo + a new 2% deposit fee and wants to be the primary system; Tock/Resy require full migration. Deposits cut no-shows ~57% but operators can't afford the platform tax.",
+        "who": "Sonoma's 425+ wineries and tasting rooms, fishing/kayak charters, cooking classes — Copper Bay's warm local channel.",
+        "gap": "The GENERIC restaurant deposit widget is already done well (Carbonara is near-free Stripe pass-through, plus Resmio, Tablein, resOS). But none of these are marketed to wine-country tasting rooms or charter operators, don't appear in wine-tourism contexts, and lack the local trust signal. The defensible niche is winery + charter specifically, sold through Copper Bay's local relationships.",
+        "score": 78,
+        "breakdown": {
+          "demand": 23,
+          "gap": 14,
+          "buildable": 17,
+          "distribution": 14,
+          "monetization": 9,
+          "defensibility": 1
+        },
+        "buildPlan": "Static reserve page + Stripe Checkout deposit + Resend/Twilio reminders, embeddable as a <script>. 3-day Vercel build. Monetize through agency relationships from day one; later white-label via Stripe Connect platform account.",
+        "deployTarget": "vercel-free",
+        "needsOwner": [
+          "Twilio (reminder SMS)",
+          "FORGE Stripe Connect platform account (white-label/reseller tier)"
+        ],
+        "brandName": "ReserveRight",
+        "status": "researched",
+        "liveUrl": "",
+        "repo": "",
+        "createdSession": "2026-06-07",
+        "notes": "Validator RESHAPE 87->78: the 'nobody does bolt-on deposits' claim is false for restaurants (Carbonara undercuts hard). Survives ONLY as the winery/charter niche with the warm local channel as moat. Do not pitch generic restaurants."
+      },
+      {
+        "id": "contractor-quote-page-agency-install",
+        "title": "Contractor Instant-Quote Page (agency-install)",
+        "oneliner": "A done-for-you, pre-configured ballpark-estimate page for a specific trade vertical that qualifies inbound leads before the phone call and emails the contractor pre-filled answers.",
+        "problem": "Trades waste ~15 min/call on 'how much for X?' tire-kickers. Field-service suites (Jobber/Housecall, $49-199/mo) force the whole business onto a platform when the real pain is one narrow page.",
+        "who": "Plumbers, HVAC, landscapers, electricians, painters — Copper Bay's core trades client base in Sonoma County.",
+        "gap": "Generic DIY quote-widget builders already exist and are free (CalcWidget, ConvertCalculator, CALCONIC, QuoteIQ). So the build-your-own SaaS angle is dead. The surviving wedge is 'we set it up for you for your trade and you own it' — an agency-delivered product, not a self-serve builder.",
+        "score": 74,
+        "breakdown": {
+          "demand": 22,
+          "gap": 13,
+          "buildable": 18,
+          "distribution": 13,
+          "monetization": 6,
+          "defensibility": 2
+        },
+        "buildPlan": "JSON-driven question tree -> ballpark range -> lead email via Resend, delivered as a pre-built embed snippet per trade. 2-day build. Sold as a fixed-fee agency setup + small monthly hosting/support, not a SaaS subscription.",
+        "deployTarget": "vercel-free",
+        "needsOwner": [
+          "Resend (lead email)"
+        ],
+        "brandName": "QuotePilot",
+        "status": "shipped",
+        "liveUrl": "https://dukotah.github.io/quotepilot/",
+        "repo": "https://github.com/Dukotah/quotepilot",
+        "createdSession": "2026-06-07",
+        "notes": "Validator RESHAPE 84->74: free incumbents own the builder lane, so the 'no standalone qualifier exists' gap is false. Compete on done-for-you install + ownership through the Copper Bay channel, not features. Natural bundle with the Job-Completion Report into a trades stack."
+      },
+      {
+        "id": "marina-slip-waitlist-lite",
+        "title": "Marina Slip Waitlist & Day-Use Lite",
+        "oneliner": "A lightweight public waitlist plus day-use launch reservation page with deposit collection for small marinas and county boat launches.",
+        "problem": "Roughly 73% of small marinas (directional) run on spreadsheets; Dockwa/DockMaster/PayMyDock ($99-500/mo) are built for full-service marinas with fuel docks. County launches still mail PDF forms. Nobody serves the sub-10-slip / launch / outfitter operator's single pain.",
+        "who": "Sub-50-slip marinas, county park boat launches, yacht clubs, kayak/SUP outfitters.",
+        "gap": "Snag-A-Slip (free-to-list, pay-per-booking) is the closest threat but is a marketplace model, not a self-hosted waitlist widget. PayMyDock/MARINAGO/MarinaOffice are over-built 80-feature suites. Nothing affordable serves only waitlist + day-use for the smallest operators.",
+        "score": 73,
+        "breakdown": {
+          "demand": 21,
+          "gap": 17,
+          "buildable": 15,
+          "distribution": 13,
+          "monetization": 6,
+          "defensibility": 1
+        },
+        "buildPlan": "Calendar + form + Stripe deposit + Resend confirmation. 3-4 day Vercel build. Dog-food at Lake Sonoma Marina first as the flagship reference, then replicate. Build the minimum Lake Sonoma actually needs; do not over-engineer.",
+        "deployTarget": "vercel-free",
+        "needsOwner": [
+          "Stripe (deposits)",
+          "Resend (confirmations)",
+          "Twilio (reminders, later)"
+        ],
+        "brandName": "SlipLine",
+        "status": "researched",
+        "liveUrl": "",
+        "repo": "",
+        "createdSession": "2026-06-07",
+        "notes": "Validator KEEP at 73. Moat is the live seed client + Copper Bay local network, not the software. Complements the existing marina SaaS. Note: Stripe+Resend are server-side keys, so Vercel free (not GitHub Pages)."
+      },
+      {
+        "id": "job-completion-report-review-push",
+        "title": "Job-Completion Report + Review Push",
+        "oneliner": "Tech snaps before/after photos and the customer gets a branded PDF of what was done plus a one-tap Google-review CTA while the goodwill is fresh.",
+        "problem": "CompanyCam ($79-199/mo, 3-user min) is photo-only; ServiceTitan/Jobber/Housecall bury photos inside $50-150+/user suites. Nobody owns the customer-facing 'completion moment' that both prevents disputes and harvests reviews.",
+        "who": "Roofers, painters, HVAC, plumbers — Copper Bay's trades base.",
+        "gap": "Photo apps are standalone and dev/internal-facing; suites treat photos as a secondary feature; none close the customer-facing review loop with a branded completion report. The 'completion moment' is genuinely unoccupied.",
+        "score": 71,
+        "breakdown": {
+          "demand": 20,
+          "gap": 17,
+          "buildable": 14,
+          "distribution": 12,
+          "monetization": 6,
+          "defensibility": 2
+        },
+        "buildPlan": "PWA camera + Cloudinary upload + client-side PDF + public report URL + Google-review deep link. Realistically 3-4 weeks to an MVP that works reliably on iOS Safari (camera/upload complexity is non-trivial).",
+        "deployTarget": "vercel-free",
+        "needsOwner": [
+          "Cloudinary (image hosting)",
+          "Twilio (SMS delivery)",
+          "Stripe (branding-removal tier)"
+        ],
+        "brandName": "DoneRight",
+        "status": "researched",
+        "liveUrl": "",
+        "repo": "",
+        "createdSession": "2026-06-07",
+        "notes": "Validator KEEP at 71 (trimmed from 73 for iOS PWA build complexity — '1-2 weeks' was optimistic). Natural bundle with the trades quote page into a Copper Bay trades stack."
+      },
+      {
+        "id": "local-geo-audit-lead-magnet",
+        "title": "Local GEO Audit (agency lead magnet)",
+        "oneliner": "Enter a business name and location to get a report card on AI-Overview citation, LocalBusiness JSON-LD validity, and NAP consistency — as a free Copper Bay lead magnet.",
+        "problem": "AI Overviews now hit ~25.8% of US searches and local businesses are anxious about being invisible to AI search. Paid GEO tools (Goodie, Scrunch, SE Ranking) are generalist and $49-199/mo.",
+        "who": "Local businesses worried about AI-search visibility, and the agency (Copper Bay) that pitches them.",
+        "gap": "A crowded free tier is already emerging (Blazly GEO free, GEO Metrics, others) for AI-visibility checks, so the standalone-product gap is closing. But the genuinely zero-secret slice — client-side JSON-LD + NAP validation as a free explainer that funnels to a 'book a GEO audit with us' CTA — is a clean distribution asset for the agency.",
+        "score": 65,
+        "breakdown": {
+          "demand": 20,
+          "gap": 13,
+          "buildable": 13,
+          "distribution": 14,
+          "monetization": 4,
+          "defensibility": 1
+        },
+        "buildPlan": "Static one-page explainer + client-side JSON-LD/schema validator + NAP consistency check (genuinely zero-secret) + manual 'book a GEO audit' CTA. 1-2 days. The live AI-Overview citation check needs a SerpAPI/Serper key and is a later paid add.",
+        "deployTarget": "github-pages",
+        "needsOwner": [
+          "SerpAPI/Serper (only for the live AI-Overview citation tier later)"
+        ],
+        "brandName": "VisibleAI",
+        "status": "researched",
+        "liveUrl": "",
+        "repo": "",
+        "createdSession": "2026-06-07",
+        "notes": "Validator RESHAPE 79->65: as a standalone GEO SaaS it's CUT (free tier already crowded, and the meaningful AI-citation check is NOT zero-secret). Survives as a free agency lead-magnet + funnel, not a product."
+      },
+      {
+        "id": "review-pulse-white-label",
+        "title": "Review-Pulse (white-label add-on)",
+        "oneliner": "A QR/link micro-app that routes happy customers to a Google review and unhappy ones to private feedback — sold as a configured, agency-branded add-on, not a standalone SaaS.",
+        "problem": "Birdeye starts $299/mo (with BBB billing-trap complaints) and Podium $249-599 — priced for franchises, locking out solo operators who still desperately want more Google reviews.",
+        "who": "Single-location local businesses already on Copper Bay's roster — restaurants, salons, contractors, marinas.",
+        "gap": "The cheap standalone lane is saturated (WiserReview $9/mo, Reputigo $14.95/mo, OpenWidget free, NiceJob, GatherUp), and the experience-gate pattern is a standard feature, not a differentiator. There is no room to win on price as a new standalone SaaS. The only viable angle is bundling a configured instance as a white-label add-on resold with agency branding + support.",
+        "score": 65,
+        "breakdown": {
+          "demand": 23,
+          "gap": 9,
+          "buildable": 18,
+          "distribution": 13,
+          "monetization": 1,
+          "defensibility": 1
+        },
+        "buildPlan": "Static page + public Google Maps review deep-link + sentiment fork; no API keys for the MVP. 1-2 days. Resell as a configured ~$29/mo agency add-on (or fold into the trades stack as a feature), not a new branded product.",
+        "deployTarget": "github-pages",
+        "needsOwner": [
+          "Twilio (optional SMS request tier)"
+        ],
+        "brandName": "ReviewPulse",
+        "status": "researched",
+        "liveUrl": "",
+        "repo": "",
+        "createdSession": "2026-06-07",
+        "notes": "Validator RESHAPE 82->65: too crowded at $9-15 to win on price as standalone. Either resell an existing tool (WiserReview/Reputigo) white-label or ship as a bundled feature of the Copper Bay trades stack — do not build/market a fresh standalone SaaS."
+      }
+    ],
+    "config": {
+      "umbrellaBrand": "Copper Bay Labs",
+      "surfaceScoreThreshold": 70,
+      "autoGreenlightScore": null,
+      "maxConcurrentBuilds": 3,
+      "buildAgentCap": 12,
+      "defaultDeployTarget": "github-pages",
+      "lanes": {
+        "zeroSecret": true,
+        "needsOwnerParked": true
+      },
+      "ownerEmail": "dukotah@gmail.com",
+      "domainPlan": "ONE umbrella .dev domain (e.g. copperbaylabs.dev), one SUBDOMAIN per product (shipsafe.copperbaylabs.dev, etc.). DEFERRED — owner buys later. Until then products stay on dukotah.github.io/<repo>. Do NOT register per-product domains; converge on the single .dev. GitHub Pages gives free HTTPS + custom subdomains (CNAME file in repo + a CNAME DNS record → dukotah.github.io). .dev requires HTTPS, which Pages provides.",
+      "connectedChannels": {
+        "gmail": true,
+        "x": false,
+        "linkedin": false,
+        "reddit": false,
+        "producthunt": false
+      },
+      "notes": "Scout writes ideas here; owner flips status to greenlit. See FORGE.md for the full operating brief."
+    }
+  },
+  "overseer": {
+    "actions": [
+      "**Deploy / merge decisions:**",
+      "**shipsafe `overseer/2026-06-08-p2a`** (1a4c93a): contrast fix (#8a8276→#706860) + aria-current nav underline + unified `?v=8` + P2.1a link-purpose check + focus management + aria-expanded FAQ. Screenshot-verify `?demo=1`, then merge to main **first** (p2b is based on p2a).",
+      "**shipsafe `overseer/2026-06-08-p2b`** (a48ea9b, 1 commit): P2.1b ARIA roles validity (10th a11y check, WCAG 4.1.2 Level A). Merge p2a first; p2b then fast-forwards cleanly. Demo `?demo=1` will show \"info\" for ARIA roles (no role attrs in the sample — correct). Owner QA: paste a URL with `role=\"invalid\"` or `role=\"\"` → expect fail + fix guidance.",
+      "**shipsafe `overseer/2026-06-08-p2c`** (43b69f2, 1 commit): P2.1c tab-order heuristic (11th a11y check, WCAG 2.4.3 Level A). Merge p2a → p2b → p2c in order (each is 1 commit). Demo `?demo=1` will show \"info\" for tab order (sample HTML has no tabindex attrs — correct). Owner QA: paste a URL with `tabindex=\"1\"` or `tabindex=\"2\"` → expect warn + fix guidance.",
+      "**shipsafe `overseer/2026-06-08-p2d`** (a563c41, 1 commit): P2.1d video captions (12th a11y check, WCAG 1.2.2 Level A). Merge p2a → p2b → p2c → p2d in order. Demo `?demo=1` will show \"info\" for video captions (sample HTML has no video — correct). Owner QA: paste a URL with `<video>` without `<track kind=\"captions\">` → expect fail + fix guidance.",
+      "**shipsafe `overseer/2026-06-08-p2e`** (9a36eb1, 1 commit): P2.1e language-of-parts (13th a11y check, WCAG 3.1.2 Level AA). Merge after p2d. Demo `?demo=1` returns \"info\" (sample HTML has no inline lang attrs — correct for a monolingual page). Owner QA: paste a URL with `<span lang=\"\">` → expect fail; `<span lang=\"fr\">` → expect pass.",
+      "**shipsafe `overseer/2026-06-08-p2f`** (1448a1c, 1 commit): P2.1f skip link resolves (14th a11y check, WCAG 2.4.1 Level A). Merge p2a → p2b → p2c → p2d → p2e → p2f in order. Demo `?demo=1` returns \"info\" for skip link (sample HTML has no skip link — correct for a minimal AI-generated page). ShipSafe's own pages pass (href=\"#main\" + id=\"main\" present). Owner QA: paste a URL with `<a class=\"skip\" href=\"#nonexistent\">` → expect fail + fix guidance.",
+      "**CLOSE shipsafe `overseer/2026-06-08-p1.3`** (62ab2ad): superseded.",
+      "**CLOSE shipsafe `overseer/2026-06-08-p1.5`** (e4bacc2): superseded.",
+      "**CLOSE shipsafe `overseer/2026-06-08`** (b8b2535): rejected design, 6 behind main.",
+      "**marina `phase-3-golive`** (24 ahead vs main) + **`overseer/2026-06-07`** (1 commit, promo admin UI) — awaiting merge-to-main decision + Vercel admin-deploy fix.",
+      "**boots `overseer/2026-06-07`** (superseded by owner's own work) — close it.",
+      "**apex `overseer/2026-06-07`** (fa1742b, coverage uplift): needs rebase onto current main (feat/risk-hardening added ~33 commits) before it can merge cleanly.",
+      "**apex `overseer/2026-06-08`** (tip `b202e1d`, F2.3 + walk-forward + docs): also needs rebase onto current main before merging.",
+      "**CLOSE apex `feat/risk-hardening`**: already merged to main (`c699015`).",
+      "**apex `feat/research-buildout`** (22 ahead / ~55 behind after risk-hardening): heavily diverged; rebase/squash-merge or close decision needed.",
+      "**apex `feat/status-export`** (~1 ahead / ~55+ behind): almost certainly obsolete — close.",
+      "**Boots:** apply Supabase migrations 0005/0006/0007 live; set Vercel secrets (SERVICE_ROLE, STRIPE_*, RESEND, VAPID, CRON_SECRET, GITHUB_APP_*, SENTRY_DSN).",
+      "**Duke (growth levers):** GBP as service-area business; real reviews + GOOGLE_REVIEW_URL; founder headshot + LinkedIn; Vercel env (CRM_ADMIN_TOKEN, GALLERY_BASE_URL, GITHUB_WEBHOOK_SECRET, OUTREACH_DOMAIN_VERIFIED_DATE, Web Analytics); **set UPSTASH_REDIS_REST_URL + TOKEN + RESEND_API_KEY in Vercel prod** (root cause of form hangs — the withTimeout fix degrades gracefully but the real fix is the env vars); verify Resend domain.",
+      "**Websites:** set SITE_URL / GALLERY_BASE_URL on Vercel; decide on deploy; run a fresh CSV batch.",
+      "**Marina:** Clerk SECRET key; Stripe test keys (switched from Square — D-013); diagnose marina-admin Vercel deploy failure; per-tenant billing; legal/ToS. Merge `phase-3-golive` + `overseer/2026-06-07` onto main (trivial sidebar conflict: combine Resources/Gift Cards/Promos nav items).",
+      "**Apex Quant:** let the 30-day paper gate run; flip to live only after Sharpe holds; decide whether to fund a survivorship-free dataset for the value edge (needed for F3.3 live sleeve). Rebase + merge `overseer/2026-06-07` + `overseer/2026-06-08` (both need rebase onto new main). Close stale branches: `feat/risk-hardening` (merged), `feat/status-export`, review `feat/research-buildout`.",
+      "**ShipSafe:** P1.9 real domain (`shipsafe.app` or `copperbaylabs.com` subdomain); custom-domain GitHub Pages deploy. After domain: P4.2 launch (Product Hunt / Show HN) — only after Phase 1 clears.",
+      "**Sonoma scraper:** local main is 24 behind origin — pull/sync."
+    ],
+    "actionsError": null,
+    "run": null,
+    "runError": "Couldn't read runs (HTTP 403).",
+    "runNote": null
+  },
+  "pending": true
+}

@@ -112,7 +112,7 @@ ul.todo li b{color:var(--yel)}ul.todo code{background:#0b0f14;padding:1px 5px;bo
   <header>
     <div>
       <h1>Copper Bay Labs <span class="muted" style="font-weight:400">· Overseer</span></h1>
-      <p class="sub">Studio control surface — live GitHub truth for every project &amp; the forge pipeline · <a href="https://claude.ai/code/routines/trig_014XPBhL62SX3vh5qei8oNPe" target="_blank" rel="noopener">manage daily routine ↗</a></p>
+      <p class="sub">Studio control surface — GitHub truth for every project &amp; the forge pipeline · <a href="https://claude.ai/code/routines/trig_014XPBhL62SX3vh5qei8oNPe" target="_blank" rel="noopener">manage daily routine ↗</a></p>
     </div>
     <div class="sub" id="updated">—</div>
   </header>
@@ -121,10 +121,7 @@ ul.todo li b{color:var(--yel)}ul.todo code{background:#0b0f14;padding:1px 5px;bo
 
   <div class="bar">
     <button id="refresh">↻ Refresh</button>
-    <input id="token" type="password" placeholder="GitHub token (optional)" autocomplete="off">
-    <button id="savetok">Save</button>
-    <span class="toknote" id="toknote"></span>
-    <span class="muted" id="rate" style="margin-left:auto"></span>
+    <span class="toknote" id="source" style="margin-left:auto"></span>
   </div>
 
   <div id="banner" class="banner" style="display:none"></div>
@@ -139,153 +136,59 @@ ul.todo li b{color:var(--yel)}ul.todo code{background:#0b0f14;padding:1px 5px;bo
   <div class="grid" id="support"></div>
 
   <h2>Forge pipeline — the idea factory</h2>
-  <div id="forge"><div class="spin">Loading forge/ideas.json…</div></div>
+  <div id="forge"><div class="spin">Loading forge pipeline…</div></div>
 
   <h2>Owner action list <span class="muted" style="text-transform:none;letter-spacing:0">— things only you can do (from OVERSEER.md)</span></h2>
-  <ul class="todo" id="actions"><li class="spin">Loading OVERSEER.md…</li></ul>
+  <ul class="todo" id="actions"><li class="spin">Loading owner actions…</li></ul>
 
   <h2>Latest overseer run</h2>
-  <div class="run" id="run"><span class="spin">Checking master-prompts/runs…</span></div>
+  <div class="run" id="run"><span class="spin">Loading latest run…</span></div>
 
   <p class="foot">
-    Copper Bay Labs studio dashboard — live from the GitHub API in your browser. No server, no build, hosted free on GitHub Pages.
+    Copper Bay Labs studio dashboard. A scheduled GitHub Action gathers every project's GitHub-side state
+    server-side and publishes a single <code>data/status.json</code>; this page loads just that one static
+    file — so it never touches the GitHub API from your browser and can't hit the 60/hr rate-limit wall.
     Shows what's <b>on GitHub</b>: last commit, unmerged branches (with commit counts), open PRs, CI status,
     the owner-action brief, the latest overseer run, shipped products, and the forge idea pipeline.
     It can't see your laptop's uncommitted work — run <code>overseer.bat</code> locally for that.
-    <b>Add a GitHub token</b> (read-only; stored only in this browser) to unlock private repos, PRs/CI, and a 5000/hr rate limit.
-    Auto-refreshes (5&nbsp;min with a token, 20&nbsp;min without).
+    Data refreshes every ~10&nbsp;min (the Action's schedule); the page re-reads the file every 5&nbsp;min.
   </p>
 </div>
 
 <script>
-const OWNER = "Dukotah";
-const ACTIVE = [
-  {repo:"boots",                   deploys:true,  note:"Cantrip — gamified coding academy"},
-  {repo:"Websites",                deploys:true,  note:"outreach demo-site factory"},
-  {repo:"Duke",                    deploys:true,  note:"Copper Bay Tech agency site"},
-  {repo:"marina-booking-platform", deploys:true,  note:"multi-tenant booking SaaS"},
-  {repo:"apex-quant",              deploys:false, note:"algo-trading framework (CI cron)"},
-];
-const SUPPORT = [
-  {repo:"master-prompts",      deploys:false, note:"prompt library + OVERSEER.md home", support:true},
-  {repo:"sonoma-lead-scraper", deploys:false, note:"lead scraper → Duke CRM", support:true},
-  {repo:"apex-trader",         deploys:true,  note:"private control surface for apex-quant", support:true, private:true},
-  {repo:"forge",               deploys:false, note:"autonomous product factory (Scout → greenlight → build)", support:true},
-];
-// Labs products — loaded separately for premium card rendering
-const LABS_REPOS = [
-  {repo:"shipsafe",   emoji:"🛟", liveUrl:"https://dukotah.github.io/shipsafe/"},
-  {repo:"quotepilot", emoji:"🏷️", liveUrl:"https://dukotah.github.io/quotepilot/"},
-];
-const BRIEF_RAW = `https://raw.githubusercontent.com/${OWNER}/master-prompts/main/OVERSEER.md`;
-const FORGE_IDEAS_URL = `https://raw.githubusercontent.com/${OWNER}/forge/main/ideas.json`;
-const FORGE_CONFIG_URL = `https://raw.githubusercontent.com/${OWNER}/forge/main/forge.config.json`;
+// ── Pivot: this page reads ONE pre-computed static file. All GitHub API calls
+//    happen server-side in the refresh-status Action (see .github/workflows),
+//    which writes data/status.json. No browser API calls → no 60/hr rate limit. ──
+const STATUS_URL = "./data/status.json";
+let OWNER = "Dukotah";
 
-let TOKEN = localStorage.getItem("gh_token") || "";
-const hdr = () => { const h = {Accept:"application/vnd.github+json"}; if(TOKEN) h.Authorization = "Bearer "+TOKEN; return h; };
-
-// ── Concurrency limiter — never fire the whole repo list at once and torch the
-//    unauthenticated 60/hr budget. Cap in-flight API requests (more with a token). ──
-function pLimit(max){ let active=0; const q=[]; const pump=()=>{ if(active>=max||!q.length) return; active++; const job=q.shift(); job.fn().then(job.res,job.rej).finally(()=>{active--;pump();}); }; return fn=>new Promise((res,rej)=>{q.push({fn,res,rej});pump();}); }
-let ghLimit = pLimit(TOKEN?6:3);
-const ghFetch = (path) => ghLimit(()=>fetch(`https://api.github.com/repos/${OWNER}/${path}`, {headers:hdr()}));
-
-// ── Rate-limit state + short-TTL localStorage cache ──
-const RATE = {limited:false, reset:0, remaining:null, limit:null};
-const CACHE_TTL = 5*60*1000; // serve cache on refreshes within 5 min → a reload doesn't re-spend the budget
-function cacheGet(key){ try{ return JSON.parse(localStorage.getItem("ghc:"+key)); }catch{ return null; } }
-function cacheSet(key,data){ try{ localStorage.setItem("ghc:"+key, JSON.stringify({t:Date.now(),data})); }catch{} }
-function markLimited(res){ RATE.limited=true; const r=res&&res.headers&&res.headers.get("x-ratelimit-reset"); RATE.reset = r ? (+r*1000) : (Date.now()+60000); }
-
-// Fetch a GitHub API path as JSON with caching + graceful 429/403 handling.
-// Returns {ok, data, cached, stale, rateLimited, status}. Never throws.
-async function ghData(path, ttl=CACHE_TTL){
-  const cached = cacheGet(path);
-  if(cached && (Date.now()-cached.t < ttl)) return {ok:true, data:cached.data, cached:true};
-  // Known rate-limited and not yet reset → don't spend a call; serve stale cache if we have it.
-  if(RATE.limited && Date.now() < RATE.reset)
-    return cached ? {ok:true, data:cached.data, cached:true, stale:true} : {ok:false, rateLimited:true};
-  let res;
-  try{ res = await ghFetch(path); }
-  catch(e){ return cached ? {ok:true, data:cached.data, cached:true, stale:true} : {ok:false, error:e.message}; }
-  const rem = res.headers.get("x-ratelimit-remaining");
-  if(res.status===403 || res.status===429){ markLimited(res); return cached ? {ok:true, data:cached.data, cached:true, stale:true} : {ok:false, rateLimited:true, status:res.status}; }
-  if(!res.ok) return cached ? {ok:true, data:cached.data, cached:true, stale:true} : {ok:false, status:res.status};
-  let data; try{ data = await res.json(); }catch{ return {ok:false, status:res.status}; }
-  cacheSet(path, data);
-  if(rem==="0") markLimited(res); else RATE.limited=false; // last good call before the wall
-  return {ok:true, data};
-}
 const esc = s => String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-const ago = iso => { const s=Math.floor((Date.now()-new Date(iso))/1000); for(const [sec,l] of [[31536000,"y"],[2592000,"mo"],[604800,"w"],[86400,"d"],[3600,"h"],[60,"m"]]) if(s>=sec) return Math.floor(s/sec)+l+" ago"; return "just now"; };
+const ago = iso => { if(!iso) return ""; const s=Math.floor((Date.now()-new Date(iso))/1000); for(const [sec,l] of [[31536000,"y"],[2592000,"mo"],[604800,"w"],[86400,"d"],[3600,"h"],[60,"m"]]) if(s>=sec) return Math.floor(s/sec)+l+" ago"; return "just now"; };
 
 let TOTALS = {repos:0, unmerged:0, ov:0, prs:0, ciBad:0};
-// Store loaded labs repo data keyed by repo name so product cards can reuse it
-let LABS_DATA = {};
-
-async function loadRepo(r){
-  const metaR = await ghData(`${r.repo}`);
-  if(!metaR.ok) return {...r, ok:false, rateLimited:metaR.rateLimited, err: metaR.rateLimited?"rate-limited":(metaR.status?`HTTP ${metaR.status}`:(metaR.error||"load failed"))};
-  const meta = metaR.data;
-  const def = meta.default_branch;
-
-  const [commitsR, branchesR] = await Promise.all([
-    ghData(`${r.repo}/commits?per_page=1`),
-    ghData(`${r.repo}/branches?per_page=100`),
-  ]);
-  let prs = [], ci = null;
-  if(TOKEN){
-    const [prsR, runsR] = await Promise.all([
-      ghData(`${r.repo}/pulls?state=open&per_page=10`, 60000),
-      ghData(`${r.repo}/actions/runs?per_page=1`, 60000),
-    ]);
-    prs = (prsR.ok && Array.isArray(prsR.data)) ? prsR.data : [];
-    const runsJson = runsR.ok ? runsR.data : null;
-    ci = runsJson && runsJson.workflow_runs && runsJson.workflow_runs[0] ? runsJson.workflow_runs[0] : null;
-  }
-  const commits = (commitsR.ok && Array.isArray(commitsR.data)) ? commitsR.data : [];
-  const branchList = (branchesR.ok && Array.isArray(branchesR.data)) ? branchesR.data : [];
-  const last = commits[0];
-
-  // Per-branch ahead/behind is the single biggest call multiplier (1 compare call each).
-  // Only spend those with a token; unauthenticated, surface the overseer/* review branches
-  // by name (no counts) so a single load stays well under the 60/hr budget.
-  const others = branchList.filter(b=>b.name!==def);
-  let compared;
-  if(TOKEN){
-    const sub = others.slice(0,8);
-    compared = await Promise.all(sub.map(async b=>{
-      const c = await ghData(`${r.repo}/compare/${encodeURIComponent(def)}...${encodeURIComponent(b.name)}`);
-      if(!c.ok || !c.data) return {name:b.name, ahead:null};
-      return {name:b.name, ahead:c.data.ahead_by, behind:c.data.behind_by};
-    }));
-  } else {
-    compared = others.filter(b=>/^overseer\//.test(b.name)).map(b=>({name:b.name, ahead:null}));
-  }
-  compared.sort((a,b)=>(b.ahead||0)-(a.ahead||0));
-
-  return {...r, ok:true, def,
-    last: last?{sha:last.sha.slice(0,7),msg:last.commit.message.split("\n")[0],when:ago(last.commit.author.date)}:null,
-    branches:compared, prs, ci, stale: Date.now()-new Date(meta.pushed_at) > 6048e5};
-}
 
 function ciDot(ci){
-  if(!TOKEN) return "";
   if(!ci) return `<span class="dot none" title="no CI runs"></span>`;
   const c = ci.status==="completed" ? ci.conclusion : ci.status;
   const k = c==="success"?"ok":(c==="failure"||c==="timed_out"||c==="cancelled")?"bad":"run";
   return `<span class="dot ${k}" title="CI: ${esc(c)} (${esc(ci.name||"")})"></span>`;
 }
 
+// Tally a repo's numbers into the summary totals (shared by project + labs cards).
+function tally(s){
+  TOTALS.repos++;
+  const ov = (s.branches||[]).filter(b=>/^overseer\//.test(b.name));
+  TOTALS.ov += ov.length;
+  TOTALS.unmerged += (s.branches||[]).reduce((n,b)=>n+(b.ahead||0),0);
+  TOTALS.prs += (s.prs||[]).length;
+  if(s.ci && s.ci.conclusion==="failure") TOTALS.ciBad++;
+  return ov;
+}
+
 function cardHtml(s){
   const cls = s.support ? "support" : (s.deploys ? "deploys" : "nodeploy");
-  if(!s.ok){ const msg = (s.private&&!TOKEN)?"private — add a token to view":(s.rateLimited?"rate-limited — add a token or wait for reset":"couldn't load ("+esc(s.err)+")"); return `<div class="card ${cls}"><div class="chead"><h3>${esc(s.repo)}</h3></div><p class="err">${msg}</p></div>`; }
-  TOTALS.repos++;
-  const ovBranches = s.branches.filter(b=>/^overseer\//.test(b.name));
-  TOTALS.ov += ovBranches.length;
-  TOTALS.unmerged += s.branches.reduce((n,b)=>n+(b.ahead||0),0);
-  TOTALS.prs += (s.prs||[]).length;
-  if(TOKEN && s.ci && s.ci.conclusion==="failure") TOTALS.ciBad++;
+  if(!s.ok){ return `<div class="card ${cls}"><div class="chead"><h3>${esc(s.repo)}</h3></div><p class="err">couldn't load (${esc(s.err||"unknown")})</p></div>`; }
+  const ovBranches = tally(s);
 
   const chips=[];
   chips.push(s.deploys?`<span class="badge b-deploy">⚠ push main = deploy</span>`:`<span class="badge b-nodeploy">no deploy</span>`);
@@ -293,8 +196,8 @@ function cardHtml(s){
   if((s.prs||[]).length) chips.push(`<span class="badge b-pr">${s.prs.length} open PR${s.prs.length>1?"s":""}</span>`);
   if(s.stale) chips.push(`<span class="badge b-stale">untouched &gt;7d</span>`);
 
-  const commit = s.last?`<p class="commit"><b>${esc(s.last.sha)}</b> · ${esc(s.last.when)} · ${esc(s.last.msg)}</p>`:"";
-  const brows = s.branches.filter(b=>b.ahead===null||b.ahead>0).map(b=>{
+  const commit = s.last?`<p class="commit"><b>${esc(s.last.sha)}</b> · ${esc(ago(s.last.date))} · ${esc(s.last.msg)}</p>`:"";
+  const brows = (s.branches||[]).filter(b=>b.ahead===null||b.ahead>0).map(b=>{
     const isOv=/^overseer\//.test(b.name);
     const cnt = b.ahead===null?`<span class="ba">?</span>`:`<span class="ba"><b>${b.ahead}</b> ahead${b.behind?` · ${b.behind} behind`:""}</span>`;
     return `<div class="brow"><span class="bn ${isOv?"ov":""}">${esc(b.name)}</span>${cnt}</div>`;
@@ -310,9 +213,8 @@ function cardHtml(s){
   </div>`;
 }
 
-// ── Labs product card ────────────────────────────────────────────────
+// ── Copper Bay Labs product card ─────────────────────────────────────────
 function labsCardHtml(labsCfg, repoData, ideaData){
-  // repoData may be null if fetch failed
   const name = esc(labsCfg.repo);
   const repoUrl = `https://github.com/${OWNER}/${labsCfg.repo}`;
   const liveUrl = esc(labsCfg.liveUrl);
@@ -322,8 +224,8 @@ function labsCardHtml(labsCfg, repoData, ideaData){
 
   let metaHtml = "";
   if(repoData && repoData.ok){
-    const ovBranches = repoData.branches.filter(b=>/^overseer\//.test(b.name));
-    const commitStr = repoData.last ? `<b>${esc(repoData.last.sha)}</b> · ${esc(repoData.last.when)} · ${esc(repoData.last.msg)}` : "no commits";
+    const ovBranches = tally(repoData);
+    const commitStr = repoData.last ? `<b>${esc(repoData.last.sha)}</b> · ${esc(ago(repoData.last.date))} · ${esc(repoData.last.msg)}` : "no commits";
     const ovStr = ovBranches.length ? ` · <span style="color:var(--violet)">${ovBranches.length} overseer branch${ovBranches.length>1?"es":""}</span>` : "";
     const prsStr = (repoData.prs||[]).length ? ` · <span style="color:var(--cyn)">${repoData.prs.length} open PR${repoData.prs.length>1?"s":""}</span>` : "";
     metaHtml = `<div class="product-meta">${commitStr}${ovStr}${prsStr}</div>`;
@@ -345,238 +247,154 @@ function labsCardHtml(labsCfg, repoData, ideaData){
   </div>`;
 }
 
-async function loadLabs(ideasArr){
+function renderLabs(labs){
   const el = document.getElementById("labs");
-  // Fetch repo data for each labs product
-  const repoResults = await Promise.all(LABS_REPOS.map(lr => loadRepo({...lr, deploys:false, support:false})));
-  // Store for potential reuse
-  repoResults.forEach(r => { LABS_DATA[r.repo] = r; });
-  // Count these repos in TOTALS too
-  repoResults.forEach(r => {
-    if(!r.ok) return;
-    TOTALS.repos++;
-    const ovBranches = r.branches.filter(b=>/^overseer\//.test(b.name));
-    TOTALS.ov += ovBranches.length;
-    TOTALS.unmerged += r.branches.reduce((n,b)=>n+(b.ahead||0),0);
-    TOTALS.prs += (r.prs||[]).length;
-    if(TOKEN && r.ci && r.ci.conclusion==="failure") TOTALS.ciBad++;
-  });
-
-  const html = LABS_REPOS.map(lr => {
-    const repoData = LABS_DATA[lr.repo] || null;
-    const ideaData = ideasArr ? ideasArr.find(i => i.repo && i.repo.toLowerCase().includes(lr.repo.toLowerCase())) : null;
-    return labsCardHtml(lr, repoData, ideaData);
-  }).join("");
-  el.innerHTML = html || `<span class="muted">No products configured.</span>`;
+  const arr = Array.isArray(labs) ? labs : [];
+  el.innerHTML = arr.length
+    ? arr.map(l => labsCardHtml({repo:l.repo, emoji:l.emoji, liveUrl:l.liveUrl}, l.repoData, l.idea)).join("")
+    : `<span class="muted">No products configured.</span>`;
 }
 
-// ── Forge pipeline ───────────────────────────────────────────────────
-function scoreClass(score, threshold){
-  if(score >= 75) return "score-grn";
-  if(score >= threshold) return "score-yel";
-  return "score-mut";
-}
-function statusBadge(status){
-  const map = {shipped:"sb-shipped",greenlit:"sb-greenlit",researched:"sb-researched"};
-  const cls = map[status] || "sb-researched";
-  return `<span class="status-badge ${esc(cls)}">${esc(status)}</span>`;
-}
-function breakdownStr(bd){
-  if(!bd) return "";
-  const parts = ["demand","gap","buildable","distribution","monetization","defensibility"].map(k=>{
-    const v = bd[k];
-    return v !== undefined ? v : "?";
-  });
-  return parts.join("·");
-}
+// ── Forge pipeline ───────────────────────────────────────────────────────
+function scoreClass(score, threshold){ if(score>=75) return "score-grn"; if(score>=threshold) return "score-yel"; return "score-mut"; }
+function statusBadge(status){ const map={shipped:"sb-shipped",greenlit:"sb-greenlit",researched:"sb-researched"}; return `<span class="status-badge ${esc(map[status]||"sb-researched")}">${esc(status)}</span>`; }
+function breakdownStr(bd){ if(!bd) return ""; return ["demand","gap","buildable","distribution","monetization","defensibility"].map(k=>bd[k]!==undefined?bd[k]:"?").join("·"); }
 
-async function loadForge(){
+function renderForge(forge){
   const el = document.getElementById("forge");
-  try{
-    const [ideasRes, cfgRes] = await Promise.all([
-      fetch(FORGE_IDEAS_URL + "?t=" + Date.now()),
-      fetch(FORGE_CONFIG_URL + "?t=" + Date.now()),
-    ]);
-    if(!ideasRes.ok) throw new Error(`ideas.json HTTP ${ideasRes.status}`);
-    const ideasJson = await ideasRes.json();
-    const config = cfgRes.ok ? await cfgRes.json() : null;
+  const ideas = (forge && Array.isArray(forge.ideas)) ? forge.ideas : [];
+  const config = forge ? forge.config : null;
+  if(!ideas.length){ el.innerHTML = `<p class="muted" style="padding:8px 0">No forge ideas loaded.</p>`; return; }
 
-    const ideas = Array.isArray(ideasJson.ideas) ? ideasJson.ideas : [];
-    const threshold = config ? (config.surfaceScoreThreshold || 70) : 70;
-    const umbrella = config ? esc(config.umbrellaBrand || "Copper Bay Labs") : "Copper Bay Labs";
-    const maxBuilds = config ? (config.maxConcurrentBuilds || "—") : "—";
+  const threshold = config ? (config.surfaceScoreThreshold || 70) : 70;
+  const umbrella = config ? esc(config.umbrellaBrand || "Copper Bay Labs") : "Copper Bay Labs";
+  const maxBuilds = config ? (config.maxConcurrentBuilds || "—") : "—";
 
-    const shipped = ideas.filter(i=>i.status==="shipped");
-    const greenlit = ideas.filter(i=>i.status==="greenlit");
-    const researched = ideas.filter(i=>i.status==="researched");
+  const shipped = ideas.filter(i=>i.status==="shipped");
+  const greenlit = ideas.filter(i=>i.status==="greenlit");
+  const researched = ideas.filter(i=>i.status==="researched");
 
-    const headerHtml = `<div class="forge-header-bar">
-      <span><span class="fhb-label">studio </span><b>${umbrella}</b></span>
-      <span><span class="fhb-label">surface ≥ </span><b>${esc(String(threshold))}</b></span>
-      <span><span class="fhb-label">max concurrent builds </span><b>${esc(String(maxBuilds))}</b></span>
-      <span><span class="fhb-label">shipped </span><b style="color:var(--grn)">${shipped.length}</b></span>
-      <span><span class="fhb-label">greenlit </span><b style="color:var(--violet)">${greenlit.length}</b></span>
-      <span><span class="fhb-label">researched </span><b style="color:var(--muted)">${researched.length}</b></span>
-      <span><span class="fhb-label">total ideas </span><b>${ideas.length}</b></span>
+  const headerHtml = `<div class="forge-header-bar">
+    <span><span class="fhb-label">studio </span><b>${umbrella}</b></span>
+    <span><span class="fhb-label">surface ≥ </span><b>${esc(String(threshold))}</b></span>
+    <span><span class="fhb-label">max concurrent builds </span><b>${esc(String(maxBuilds))}</b></span>
+    <span><span class="fhb-label">shipped </span><b style="color:var(--grn)">${shipped.length}</b></span>
+    <span><span class="fhb-label">greenlit </span><b style="color:var(--violet)">${greenlit.length}</b></span>
+    <span><span class="fhb-label">researched </span><b style="color:var(--muted)">${researched.length}</b></span>
+    <span><span class="fhb-label">total ideas </span><b>${ideas.length}</b></span>
+  </div>`;
+
+  function ideaCardHtml(idea){
+    const sc = typeof idea.score === "number" ? idea.score : null;
+    const scCls = sc !== null ? scoreClass(sc, threshold) : "score-mut";
+    const needs = Array.isArray(idea.needsOwner) && idea.needsOwner.length
+      ? idea.needsOwner.map(n=>`<span class="needs-tag">⚙ ${esc(n)}</span>`).join("")
+      : "";
+    const liveLink = idea.liveUrl ? `<a class="idea-live-link" href="${esc(idea.liveUrl)}" target="_blank" rel="noopener">↗ live</a>` : "";
+    const bdStr = esc(breakdownStr(idea.breakdown));
+    return `<div class="idea-card status-${esc(idea.status||"researched")}">
+      <div class="idea-top">
+        <div>
+          <div class="idea-brand">${esc(idea.brandName||idea.title)}</div>
+          <div class="idea-title">${esc(idea.title)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+          ${statusBadge(idea.status||"researched")}
+          ${sc !== null ? `<span class="score-pill ${scCls}">${sc}</span>` : ""}
+        </div>
+      </div>
+      <p class="idea-oneliner">${esc(idea.oneliner)}</p>
+      <div class="idea-breakdown" title="demand·gap·buildable·distribution·monetization·defensibility">${bdStr}</div>
+      <div class="idea-footer">${needs}${liveLink}</div>
     </div>`;
-
-    function ideaCardHtml(idea){
-      const sc = typeof idea.score === "number" ? idea.score : null;
-      const scCls = sc !== null ? scoreClass(sc, threshold) : "score-mut";
-      const needs = Array.isArray(idea.needsOwner) && idea.needsOwner.length
-        ? idea.needsOwner.map(n=>`<span class="needs-tag">⚙ ${esc(n)}</span>`).join("")
-        : "";
-      const liveLink = idea.liveUrl ? `<a class="idea-live-link" href="${esc(idea.liveUrl)}" target="_blank" rel="noopener">↗ live</a>` : "";
-      const scoreBadge = sc !== null
-        ? `<div class="idea-score-block"><span class="idea-score-num ${scCls}" style="color:inherit">${sc}</span></div>`
-        : "";
-      const bdStr = esc(breakdownStr(idea.breakdown));
-
-      return `<div class="idea-card status-${esc(idea.status||"researched")}">
-        <div class="idea-top">
-          <div>
-            <div class="idea-brand">${esc(idea.brandName||idea.title)}</div>
-            <div class="idea-title">${esc(idea.title)}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-            ${statusBadge(idea.status||"researched")}
-            ${sc !== null ? `<span class="score-pill ${scCls}">${sc}</span>` : ""}
-          </div>
-        </div>
-        <p class="idea-oneliner">${esc(idea.oneliner)}</p>
-        <div class="idea-breakdown" title="demand·gap·buildable·distribution·monetization·defensibility">${bdStr}</div>
-        <div class="idea-footer">
-          ${needs}
-          ${liveLink}
-        </div>
-      </div>`;
-    }
-
-    function groupHtml(label, arr, labelStyle){
-      if(!arr.length) return "";
-      return `<div class="pipeline-group">
-        <p class="pipeline-group-label" style="${esc(labelStyle)}">${esc(label)}</p>
-        <div class="forge-grid">${arr.map(ideaCardHtml).join("")}</div>
-      </div>`;
-    }
-
-    const groupsHtml = [
-      groupHtml("Shipped — live products", shipped, "color:var(--grn)"),
-      groupHtml("Greenlit — approved to build", greenlit, "color:var(--violet)"),
-      groupHtml("Researched — scored pipeline", researched, "color:var(--muted)"),
-    ].join("");
-
-    el.innerHTML = headerHtml + (groupsHtml || `<p class="muted">No ideas in pipeline.</p>`);
-
-    // Return ideas for use by loadLabs
-    return ideas;
-  }catch(e){
-    el.innerHTML = `<p class="err" style="padding:8px 0">Couldn't load forge/ideas.json — ${esc(e.message)}</p>`;
-    return [];
   }
+  function groupHtml(label, arr, labelStyle){
+    if(!arr.length) return "";
+    return `<div class="pipeline-group">
+      <p class="pipeline-group-label" style="${esc(labelStyle)}">${esc(label)}</p>
+      <div class="forge-grid">${arr.map(ideaCardHtml).join("")}</div>
+    </div>`;
+  }
+  const groupsHtml = [
+    groupHtml("Shipped — live products", shipped, "color:var(--grn)"),
+    groupHtml("Greenlit — approved to build", greenlit, "color:var(--violet)"),
+    groupHtml("Researched — scored pipeline", researched, "color:var(--muted)"),
+  ].join("");
+  el.innerHTML = headerHtml + (groupsHtml || `<p class="muted">No ideas in pipeline.</p>`);
 }
 
-function parseActions(md){
-  const m = md.match(/owner action list[\s\S]*?\n([\s\S]*)$/i); if(!m) return [];
-  let body = m[1].split(/\n##\s/)[0]; const items=[];
-  for(const raw of body.split("\n")){ const line=raw.trim();
-    if(line.startsWith("- ")) items.push(line.replace(/^-\s+/,"")); else if(line && items.length) items[items.length-1]+=" "+line; }
-  return items;
-}
-async function loadActions(){
+// ── Owner action list + latest run (parsed server-side, rendered here) ────
+function renderActions(ov){
   const el = document.getElementById("actions");
-  try{ const md = await (await fetch(BRIEF_RAW+"?t="+Date.now())).text(); const items = parseActions(md);
-    el.innerHTML = items.length?items.map(a=>`<li>${esc(a).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>")}</li>`).join(""):`<li class="muted">No owner-action section parsed.</li>`;
-  }catch(e){ el.innerHTML = `<li class="err">Couldn't fetch OVERSEER.md (${esc(e.message)})</li>`; }
+  if(ov && ov.actionsError){ el.innerHTML = `<li class="err">${esc(ov.actionsError)}</li>`; return; }
+  const items = ov && Array.isArray(ov.actions) ? ov.actions : [];
+  el.innerHTML = items.length
+    ? items.map(a=>`<li>${esc(a).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>")}</li>`).join("")
+    : `<li class="muted">No owner-action section parsed.</li>`;
 }
-async function loadRun(){
+function renderRun(ov){
   const el = document.getElementById("run");
-  const res = await ghData("master-prompts/contents/runs");
-  if(!res.ok){
-    if(res.rateLimited){ el.innerHTML = `<span class="muted">Rate-limited${RATE.reset?` — resumes ~${esc(new Date(RATE.reset).toLocaleTimeString())}`:""}. Add a token for 5000/hr.</span>`; return; }
-    if(res.status===404){ el.innerHTML = `<span class="muted">No runs yet — the routine first fires 6am PDT and writes its report here.</span>`; return; }
-    el.innerHTML = `<span class="err">Couldn't read runs${res.status?` (HTTP ${res.status})`:""}.</span>`; return;
-  }
-  const files = Array.isArray(res.data) ? res.data.filter(f=>/^overseer-.*\.md$/.test(f.name)).sort((a,b)=>a.name<b.name?1:-1) : [];
-  if(!files.length){ el.innerHTML = `<span class="muted">No run reports yet.</span>`; return; }
-  const n = files[0];
-  let txt = "";
-  try{ txt = await (await fetch(n.download_url)).text(); }catch{}
-  el.innerHTML = `<b>${esc(n.name)}</b> · <a href="${esc(n.html_url)}" target="_blank" rel="noopener" style="color:var(--cyn)">open ↗</a>` + (txt?`<pre>${esc(txt.split("\n").slice(0,30).join("\n"))}</pre>`:"");
+  if(ov && ov.runError){ el.innerHTML = `<span class="err">${esc(ov.runError)}</span>`; return; }
+  const run = ov ? ov.run : null;
+  if(!run){ el.innerHTML = `<span class="muted">${esc((ov&&ov.runNote)||"No run reports yet.")}</span>`; return; }
+  el.innerHTML = `<b>${esc(run.name)}</b> · <a href="${esc(run.html_url)}" target="_blank" rel="noopener" style="color:var(--cyn)">open ↗</a>`
+    + (run.excerpt?`<pre>${esc(run.excerpt)}</pre>`:"");
 }
-function renderBanner(){
-  const el = document.getElementById("banner");
-  if(!el) return;
-  if(RATE.remaining!==null && RATE.remaining<=0){
-    el.style.display="block";
-    el.innerHTML = `⚠ GitHub API rate-limited (0/${esc(String(RATE.limit))}). Showing cached data; live data resumes ~${esc(new Date(RATE.reset).toLocaleTimeString())}.` + (TOKEN?"":` <b>Add a read-only token above for 5000/hr.</b>`);
-  } else if(!TOKEN && RATE.remaining!==null && RATE.remaining<12){
-    el.style.display="block";
-    el.innerHTML = `${esc(String(RATE.remaining))}/${esc(String(RATE.limit))} API calls left this hour. <b>Add a read-only token above for 5000/hr</b> (stored only in this browser).`;
-  } else {
-    el.style.display="none";
-  }
-}
-async function loadRate(){
-  try{
-    const r = await (await fetch("https://api.github.com/rate_limit",{headers:hdr()})).json(); // does not consume quota
-    const c = r.resources.core;
-    RATE.remaining = c.remaining; RATE.limit = c.limit; RATE.reset = c.reset*1000; RATE.limited = c.remaining<=0;
-    const rel = document.getElementById("rate");
-    rel.textContent = `API: ${c.remaining}/${c.limit}`;
-    rel.style.color = c.remaining<8 ? "var(--red)" : "";
-    renderBanner();
-    return c;
-  }catch{ return null; }
-}
+
 function renderSummary(){
   document.getElementById("summary").innerHTML =
     `<div class="s"><b>${TOTALS.repos}</b><span>repos tracked</span></div>
-     <div class="s"><b style="color:var(--yel)">${TOKEN?TOTALS.unmerged:"—"}</b><span>commits unmerged${TOKEN?" to main":" (add token)"}</span></div>
+     <div class="s"><b style="color:var(--yel)">${TOTALS.unmerged}</b><span>commits unmerged to main</span></div>
      <div class="s"><b style="color:var(--violet)">${TOTALS.ov}</b><span>overseer branches</span></div>
-     ${TOKEN?`<div class="s"><b style="color:var(--cyn)">${TOTALS.prs}</b><span>open PRs</span></div><div class="s"><b style="color:${TOTALS.ciBad?'var(--red)':'var(--grn)'}">${TOTALS.ciBad}</b><span>CI failing</span></div>`:""}`;
+     <div class="s"><b style="color:var(--cyn)">${TOTALS.prs}</b><span>open PRs</span></div>
+     <div class="s"><b style="color:${TOTALS.ciBad?'var(--red)':'var(--grn)'}">${TOTALS.ciBad}</b><span>CI failing</span></div>`;
 }
+
+const PENDING = `<p class="muted" style="padding:8px 0">⏳ Waiting for the first collector run — the GitHub Action publishes data within ~10 min.</p>`;
 
 async function refresh(){
-  document.getElementById("updated").textContent = "updating…";
+  const upd = document.getElementById("updated");
+  upd.textContent = "loading…";
   TOTALS = {repos:0, unmerged:0, ov:0, prs:0, ciBad:0};
 
-  // Check the budget FIRST (free — doesn't consume quota). If we're already
-  // rate-limited, every ghData() call below short-circuits to cache instead of
-  // re-spending and 429-ing. The limiter then caps any live calls we do make.
-  await loadRate();
+  let data;
+  try{
+    const res = await fetch(STATUS_URL + "?t=" + Date.now());
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    data = await res.json();
+  }catch(e){
+    upd.textContent = "data unavailable";
+    document.getElementById("active").innerHTML =
+      `<p class="err">Couldn't load data/status.json (${esc(e.message)}). The refresh Action publishes it every ~10 min — check the repo's Actions tab.</p>`;
+    return;
+  }
 
-  // Load forge first to get ideas for Labs cards; load active+support in parallel
-  const [forgeIdeas, act, sup] = await Promise.all([
-    loadForge(),
-    Promise.all(ACTIVE.map(loadRepo)),
-    Promise.all(SUPPORT.map(loadRepo)),
-  ]);
-
-  document.getElementById("active").innerHTML = act.map(cardHtml).join("");
-  document.getElementById("support").innerHTML = sup.map(cardHtml).join("");
-
-  // Labs cards (fetches their own repo data + annotates with ideas from forge)
-  await loadLabs(forgeIdeas);
-
+  OWNER = data.owner || OWNER;
+  document.getElementById("active").innerHTML  = (data.active||[]).map(cardHtml).join("")  || PENDING;
+  document.getElementById("support").innerHTML = (data.support||[]).map(cardHtml).join("") || PENDING;
+  renderLabs(data.labs);
+  renderForge(data.forge);
+  renderActions(data.overseer);
+  renderRun(data.overseer);
   renderSummary();
-  await Promise.all([loadActions(), loadRun()]);
-  await loadRate(); // refresh the displayed remaining count + banner after the calls
-  document.getElementById("updated").textContent = "updated " + new Date().toLocaleTimeString();
+
+  const age = data.generatedAt ? ago(data.generatedAt) : "";
+  upd.innerHTML = `data <b>${esc(age||"—")}</b>`;
+  document.getElementById("source").textContent =
+    `refreshed by GitHub Action${data.authed===false?" (public-only)":""}`;
+
+  const banner = document.getElementById("banner");
+  if(data.generatedAt && (Date.now()-new Date(data.generatedAt)) > 30*60*1000){
+    banner.style.display = "block";
+    banner.innerHTML = `⚠ Data is <b>${esc(ago(data.generatedAt))}</b> old — the refresh Action may be paused or delayed. Check the repo's Actions tab.`;
+  } else {
+    banner.style.display = "none";
+  }
 }
 
-// token UI
-const toknote = () => document.getElementById("toknote").textContent = TOKEN ? "token set ✓ (private + PRs/CI on)" : "public-only, 60/hr";
-document.getElementById("savetok").addEventListener("click", ()=>{
-  const v = document.getElementById("token").value.trim();
-  if(v){ TOKEN=v; localStorage.setItem("gh_token",v); } else { TOKEN=""; localStorage.removeItem("gh_token"); }
-  ghLimit = pLimit(TOKEN?6:3); RATE.limited=false; // fresh budget/limiter for the new auth tier
-  document.getElementById("token").value=""; toknote(); scheduleRefresh(); refresh();
-});
 document.getElementById("refresh").addEventListener("click", refresh);
-let timer; function scheduleRefresh(){ clearInterval(timer); timer=setInterval(refresh, (TOKEN?5:20)*60*1000); }
-
-toknote(); scheduleRefresh(); refresh();
+setInterval(refresh, 5*60*1000); // re-read the static file every 5 min (cheap; no API)
+refresh();
 </script>
 </body>
 </html>
