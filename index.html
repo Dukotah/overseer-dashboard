@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Overseer · live project status</title>
+<title>Copper Bay Labs — Overseer · live studio status</title>
 <style>
-:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--ink:#e6edf3;--muted:#8b949e;--grn:#3fb950;--yel:#d29922;--red:#f85149;--cyn:#58a6ff;--violet:#bc8cff}
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--ink:#e6edf3;--muted:#8b949e;--grn:#3fb950;--yel:#d29922;--red:#f85149;--cyn:#58a6ff;--violet:#bc8cff;--copper:#c87941;--copper-dim:#7a4a26}
 *{box-sizing:border-box}html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font:14px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
 .wrap{max-width:1100px;margin:0 auto;padding:24px 18px 64px}
@@ -51,15 +51,67 @@ ul.todo li b{color:var(--yel)}ul.todo code{background:#0b0f14;padding:1px 5px;bo
 .foot{color:var(--muted);font-size:11.5px;margin-top:34px;border-top:1px solid var(--line);padding-top:14px}
 .err{color:var(--red);font-size:12px}.spin{color:var(--muted);font-size:13px}
 .toknote{color:var(--muted);font-size:11.5px}
-@media(max-width:520px){.grid{grid-template-columns:1fr}input[type=password]{width:160px}}
+
+/* ── Copper Bay Labs product cards ── */
+.labs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.product-card{background:var(--card);border:1px solid var(--copper-dim);border-left:4px solid var(--copper);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden}
+.product-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(200,121,65,.06) 0%,transparent 65%);pointer-events:none}
+.product-emoji{font-size:28px;line-height:1;margin-bottom:8px}
+.product-name{font-size:19px;font-weight:700;margin:0 0 4px;color:var(--ink)}
+.product-oneliner{color:var(--muted);font-size:12.5px;margin:0 0 12px;line-height:1.5}
+.product-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.btn-live{display:inline-flex;align-items:center;gap:4px;background:var(--copper-dim);border:1px solid var(--copper);color:var(--copper);border-radius:7px;padding:5px 12px;font-size:12.5px;font-weight:600;text-decoration:none;transition:background .15s}
+.btn-live:hover{background:rgba(200,121,65,.25);color:#e8a870}
+.btn-repo{display:inline-flex;align-items:center;gap:4px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:5px 12px;font-size:12.5px;text-decoration:none}
+.btn-repo:hover{border-color:var(--cyn);color:var(--cyn)}
+.product-meta{font:11.5px ui-monospace,Menlo,monospace;color:var(--muted);margin-top:8px;border-top:1px dashed #21262d;padding-top:8px}
+.product-meta b{color:var(--ink);font-weight:600}
+.score-pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid var(--line);margin-left:6px;vertical-align:middle}
+.score-grn{color:var(--grn);border-color:#1f6f33;background:#0d2218}
+.score-yel{color:var(--yel);border-color:#7a5b14;background:#1e1607}
+.score-mut{color:var(--muted);border-color:var(--line);background:transparent}
+
+/* ── Forge pipeline ── */
+.forge-header-bar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 16px;margin-bottom:16px;font-size:12.5px}
+.forge-header-bar .fhb-label{color:var(--muted)}
+.forge-header-bar b{color:var(--ink)}
+.pipeline-group{margin-bottom:20px}
+.pipeline-group-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px}
+.forge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.idea-card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.idea-card.status-shipped{border-left:4px solid var(--grn)}
+.idea-card.status-greenlit{border-left:4px solid var(--violet)}
+.idea-card.status-researched{border-left:4px solid #6e7681}
+.idea-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+.idea-brand{font-size:15px;font-weight:700;color:var(--ink)}
+.idea-title{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.idea-oneliner{font-size:12.5px;color:var(--ink);line-height:1.5;margin-bottom:10px}
+.idea-score-block{display:flex;align-items:center;gap:6px}
+.idea-score-num{font-size:22px;font-weight:800;line-height:1}
+.idea-breakdown{font:11px ui-monospace,Menlo,monospace;color:var(--muted);letter-spacing:.01em;margin-top:2px}
+.status-badge{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.sb-shipped{color:var(--grn);border:1px solid #1f6f33;background:#0d2218}
+.sb-greenlit{color:var(--violet);border:1px solid #5a3a9e;background:#1a1228}
+.sb-researched{color:var(--muted);border:1px solid var(--line);background:transparent}
+.idea-footer{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;border-top:1px dashed #21262d;padding-top:8px}
+.needs-tag{font-size:10.5px;color:var(--yel);border:1px solid #7a5b14;background:#1e1607;border-radius:999px;padding:1px 7px}
+.idea-live-link{font-size:11.5px;color:var(--cyn);text-decoration:none}
+.idea-live-link:hover{text-decoration:underline}
+
+@media(max-width:520px){
+  .grid{grid-template-columns:1fr}
+  .labs-grid{grid-template-columns:1fr}
+  .forge-grid{grid-template-columns:1fr}
+  input[type=password]{width:160px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
-      <h1>Overseer <span class="muted" style="font-weight:400">· live status</span></h1>
-      <p class="sub">GitHub-side truth for every project · <a href="https://claude.ai/code/routines/trig_014XPBhL62SX3vh5qei8oNPe" target="_blank" rel="noopener">manage daily routine ↗</a></p>
+      <h1>Copper Bay Labs <span class="muted" style="font-weight:400">· Overseer</span></h1>
+      <p class="sub">Studio control surface — live GitHub truth for every project &amp; the forge pipeline · <a href="https://claude.ai/code/routines/trig_014XPBhL62SX3vh5qei8oNPe" target="_blank" rel="noopener">manage daily routine ↗</a></p>
     </div>
     <div class="sub" id="updated">—</div>
   </header>
@@ -77,8 +129,14 @@ ul.todo li b{color:var(--yel)}ul.todo code{background:#0b0f14;padding:1px 5px;bo
   <h2>Active projects</h2>
   <div class="grid" id="active"><div class="spin">Loading…</div></div>
 
+  <h2>Copper Bay Labs — products</h2>
+  <div class="labs-grid" id="labs"><div class="spin">Loading…</div></div>
+
   <h2>Supporting</h2>
   <div class="grid" id="support"></div>
+
+  <h2>Forge pipeline — the idea factory</h2>
+  <div id="forge"><div class="spin">Loading forge/ideas.json…</div></div>
 
   <h2>Owner action list <span class="muted" style="text-transform:none;letter-spacing:0">— things only you can do (from OVERSEER.md)</span></h2>
   <ul class="todo" id="actions"><li class="spin">Loading OVERSEER.md…</li></ul>
@@ -87,12 +145,12 @@ ul.todo li b{color:var(--yel)}ul.todo code{background:#0b0f14;padding:1px 5px;bo
   <div class="run" id="run"><span class="spin">Checking master-prompts/runs…</span></div>
 
   <p class="foot">
-    Live from the GitHub API in your browser — no server, no build, hosted free on GitHub Pages.
+    Copper Bay Labs studio dashboard — live from the GitHub API in your browser. No server, no build, hosted free on GitHub Pages.
     Shows what's <b>on GitHub</b>: last commit, unmerged branches (with commit counts), open PRs, CI status,
-    the owner-action brief, and the latest overseer run. It can't see your laptop's uncommitted work —
-    run <code>overseer.bat</code> locally for that. <b>Add a GitHub token</b> (read-only; stored only in this
-    browser) to unlock private repos, PRs/CI, and a 5000/hr rate limit. Auto-refreshes (5&nbsp;min with a
-    token, 20&nbsp;min without).
+    the owner-action brief, the latest overseer run, shipped products, and the forge idea pipeline.
+    It can't see your laptop's uncommitted work — run <code>overseer.bat</code> locally for that.
+    <b>Add a GitHub token</b> (read-only; stored only in this browser) to unlock private repos, PRs/CI, and a 5000/hr rate limit.
+    Auto-refreshes (5&nbsp;min with a token, 20&nbsp;min without).
   </p>
 </div>
 
@@ -110,10 +168,15 @@ const SUPPORT = [
   {repo:"sonoma-lead-scraper", deploys:false, note:"lead scraper → Duke CRM", support:true},
   {repo:"apex-trader",         deploys:true,  note:"private control surface for apex-quant", support:true, private:true},
   {repo:"forge",               deploys:false, note:"autonomous product factory (Scout → greenlight → build)", support:true},
-  {repo:"shipsafe",            deploys:false, note:"🛟 forge build #1 — ADA/privacy risk checker (LIVE)", support:true},
-  {repo:"quotepilot",          deploys:false, note:"🏷️ forge build #2 — home-project cost estimator (LIVE)", support:true},
+];
+// Labs products — loaded separately for premium card rendering
+const LABS_REPOS = [
+  {repo:"shipsafe",   emoji:"🛟", liveUrl:"https://dukotah.github.io/shipsafe/"},
+  {repo:"quotepilot", emoji:"🏷️", liveUrl:"https://dukotah.github.io/quotepilot/"},
 ];
 const BRIEF_RAW = `https://raw.githubusercontent.com/${OWNER}/master-prompts/main/OVERSEER.md`;
+const FORGE_IDEAS_URL = `https://raw.githubusercontent.com/${OWNER}/forge/main/ideas.json`;
+const FORGE_CONFIG_URL = `https://raw.githubusercontent.com/${OWNER}/forge/main/forge.config.json`;
 
 let TOKEN = localStorage.getItem("gh_token") || "";
 const hdr = () => { const h = {Accept:"application/vnd.github+json"}; if(TOKEN) h.Authorization = "Bearer "+TOKEN; return h; };
@@ -122,6 +185,8 @@ const esc = s => String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":
 const ago = iso => { const s=Math.floor((Date.now()-new Date(iso))/1000); for(const [sec,l] of [[31536000,"y"],[2592000,"mo"],[604800,"w"],[86400,"d"],[3600,"h"],[60,"m"]]) if(s>=sec) return Math.floor(s/sec)+l+" ago"; return "just now"; };
 
 let TOTALS = {repos:0, unmerged:0, ov:0, prs:0, ciBad:0};
+// Store loaded labs repo data keyed by repo name so product cards can reuse it
+let LABS_DATA = {};
 
 async function loadRepo(r){
   try{
@@ -193,6 +258,172 @@ function cardHtml(s){
   </div>`;
 }
 
+// ── Labs product card ────────────────────────────────────────────────
+function labsCardHtml(labsCfg, repoData, ideaData){
+  // repoData may be null if fetch failed
+  const name = esc(labsCfg.repo);
+  const repoUrl = `https://github.com/${OWNER}/${labsCfg.repo}`;
+  const liveUrl = esc(labsCfg.liveUrl);
+  const oneliner = ideaData ? esc(ideaData.oneliner) : "";
+  const score = ideaData ? ideaData.score : null;
+  const scoreCls = score===null?"score-mut":score>=75?"score-grn":score>=70?"score-yel":"score-mut";
+
+  let metaHtml = "";
+  if(repoData && repoData.ok){
+    const ovBranches = repoData.branches.filter(b=>/^overseer\//.test(b.name));
+    const commitStr = repoData.last ? `<b>${esc(repoData.last.sha)}</b> · ${esc(repoData.last.when)} · ${esc(repoData.last.msg)}` : "no commits";
+    const ovStr = ovBranches.length ? ` · <span style="color:var(--violet)">${ovBranches.length} overseer branch${ovBranches.length>1?"es":""}</span>` : "";
+    const prsStr = (repoData.prs||[]).length ? ` · <span style="color:var(--cyn)">${repoData.prs.length} open PR${repoData.prs.length>1?"s":""}</span>` : "";
+    metaHtml = `<div class="product-meta">${commitStr}${ovStr}${prsStr}</div>`;
+  } else if(repoData && !repoData.ok){
+    metaHtml = `<div class="product-meta" style="color:var(--red)">repo load failed: ${esc(repoData.err)}</div>`;
+  }
+
+  const scoreBadge = score!==null ? `<span class="score-pill ${scoreCls}">${score}</span>` : "";
+
+  return `<div class="product-card">
+    <div class="product-emoji">${labsCfg.emoji}</div>
+    <p class="product-name">${name}${scoreBadge}</p>
+    <p class="product-oneliner">${oneliner}</p>
+    <div class="product-links">
+      <a class="btn-live" href="${liveUrl}" target="_blank" rel="noopener">Open live ↗</a>
+      <a class="btn-repo" href="${esc(repoUrl)}" target="_blank" rel="noopener">⌥ repo</a>
+    </div>
+    ${metaHtml}
+  </div>`;
+}
+
+async function loadLabs(ideasArr){
+  const el = document.getElementById("labs");
+  // Fetch repo data for each labs product
+  const repoResults = await Promise.all(LABS_REPOS.map(lr => loadRepo({...lr, deploys:false, support:false})));
+  // Store for potential reuse
+  repoResults.forEach(r => { LABS_DATA[r.repo] = r; });
+  // Count these repos in TOTALS too
+  repoResults.forEach(r => {
+    if(!r.ok) return;
+    TOTALS.repos++;
+    const ovBranches = r.branches.filter(b=>/^overseer\//.test(b.name));
+    TOTALS.ov += ovBranches.length;
+    TOTALS.unmerged += r.branches.reduce((n,b)=>n+(b.ahead||0),0);
+    TOTALS.prs += (r.prs||[]).length;
+    if(TOKEN && r.ci && r.ci.conclusion==="failure") TOTALS.ciBad++;
+  });
+
+  const html = LABS_REPOS.map(lr => {
+    const repoData = LABS_DATA[lr.repo] || null;
+    const ideaData = ideasArr ? ideasArr.find(i => i.repo && i.repo.toLowerCase().includes(lr.repo.toLowerCase())) : null;
+    return labsCardHtml(lr, repoData, ideaData);
+  }).join("");
+  el.innerHTML = html || `<span class="muted">No products configured.</span>`;
+}
+
+// ── Forge pipeline ───────────────────────────────────────────────────
+function scoreClass(score, threshold){
+  if(score >= 75) return "score-grn";
+  if(score >= threshold) return "score-yel";
+  return "score-mut";
+}
+function statusBadge(status){
+  const map = {shipped:"sb-shipped",greenlit:"sb-greenlit",researched:"sb-researched"};
+  const cls = map[status] || "sb-researched";
+  return `<span class="status-badge ${esc(cls)}">${esc(status)}</span>`;
+}
+function breakdownStr(bd){
+  if(!bd) return "";
+  const parts = ["demand","gap","buildable","distribution","monetization","defensibility"].map(k=>{
+    const v = bd[k];
+    return v !== undefined ? v : "?";
+  });
+  return parts.join("·");
+}
+
+async function loadForge(){
+  const el = document.getElementById("forge");
+  try{
+    const [ideasRes, cfgRes] = await Promise.all([
+      fetch(FORGE_IDEAS_URL + "?t=" + Date.now()),
+      fetch(FORGE_CONFIG_URL + "?t=" + Date.now()),
+    ]);
+    if(!ideasRes.ok) throw new Error(`ideas.json HTTP ${ideasRes.status}`);
+    const ideasJson = await ideasRes.json();
+    const config = cfgRes.ok ? await cfgRes.json() : null;
+
+    const ideas = Array.isArray(ideasJson.ideas) ? ideasJson.ideas : [];
+    const threshold = config ? (config.surfaceScoreThreshold || 70) : 70;
+    const umbrella = config ? esc(config.umbrellaBrand || "Copper Bay Labs") : "Copper Bay Labs";
+    const maxBuilds = config ? (config.maxConcurrentBuilds || "—") : "—";
+
+    const shipped = ideas.filter(i=>i.status==="shipped");
+    const greenlit = ideas.filter(i=>i.status==="greenlit");
+    const researched = ideas.filter(i=>i.status==="researched");
+
+    const headerHtml = `<div class="forge-header-bar">
+      <span><span class="fhb-label">studio </span><b>${umbrella}</b></span>
+      <span><span class="fhb-label">surface ≥ </span><b>${esc(String(threshold))}</b></span>
+      <span><span class="fhb-label">max concurrent builds </span><b>${esc(String(maxBuilds))}</b></span>
+      <span><span class="fhb-label">shipped </span><b style="color:var(--grn)">${shipped.length}</b></span>
+      <span><span class="fhb-label">greenlit </span><b style="color:var(--violet)">${greenlit.length}</b></span>
+      <span><span class="fhb-label">researched </span><b style="color:var(--muted)">${researched.length}</b></span>
+      <span><span class="fhb-label">total ideas </span><b>${ideas.length}</b></span>
+    </div>`;
+
+    function ideaCardHtml(idea){
+      const sc = typeof idea.score === "number" ? idea.score : null;
+      const scCls = sc !== null ? scoreClass(sc, threshold) : "score-mut";
+      const needs = Array.isArray(idea.needsOwner) && idea.needsOwner.length
+        ? idea.needsOwner.map(n=>`<span class="needs-tag">⚙ ${esc(n)}</span>`).join("")
+        : "";
+      const liveLink = idea.liveUrl ? `<a class="idea-live-link" href="${esc(idea.liveUrl)}" target="_blank" rel="noopener">↗ live</a>` : "";
+      const scoreBadge = sc !== null
+        ? `<div class="idea-score-block"><span class="idea-score-num ${scCls}" style="color:inherit">${sc}</span></div>`
+        : "";
+      const bdStr = esc(breakdownStr(idea.breakdown));
+
+      return `<div class="idea-card status-${esc(idea.status||"researched")}">
+        <div class="idea-top">
+          <div>
+            <div class="idea-brand">${esc(idea.brandName||idea.title)}</div>
+            <div class="idea-title">${esc(idea.title)}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+            ${statusBadge(idea.status||"researched")}
+            ${sc !== null ? `<span class="score-pill ${scCls}">${sc}</span>` : ""}
+          </div>
+        </div>
+        <p class="idea-oneliner">${esc(idea.oneliner)}</p>
+        <div class="idea-breakdown" title="demand·gap·buildable·distribution·monetization·defensibility">${bdStr}</div>
+        <div class="idea-footer">
+          ${needs}
+          ${liveLink}
+        </div>
+      </div>`;
+    }
+
+    function groupHtml(label, arr, labelStyle){
+      if(!arr.length) return "";
+      return `<div class="pipeline-group">
+        <p class="pipeline-group-label" style="${esc(labelStyle)}">${esc(label)}</p>
+        <div class="forge-grid">${arr.map(ideaCardHtml).join("")}</div>
+      </div>`;
+    }
+
+    const groupsHtml = [
+      groupHtml("Shipped — live products", shipped, "color:var(--grn)"),
+      groupHtml("Greenlit — approved to build", greenlit, "color:var(--violet)"),
+      groupHtml("Researched — scored pipeline", researched, "color:var(--muted)"),
+    ].join("");
+
+    el.innerHTML = headerHtml + (groupsHtml || `<p class="muted">No ideas in pipeline.</p>`);
+
+    // Return ideas for use by loadLabs
+    return ideas;
+  }catch(e){
+    el.innerHTML = `<p class="err" style="padding:8px 0">Couldn't load forge/ideas.json — ${esc(e.message)}</p>`;
+    return [];
+  }
+}
+
 function parseActions(md){
   const m = md.match(/owner action list[\s\S]*?\n([\s\S]*)$/i); if(!m) return [];
   let body = m[1].split(/\n##\s/)[0]; const items=[];
@@ -233,9 +464,20 @@ function renderSummary(){
 async function refresh(){
   document.getElementById("updated").textContent = "updating…";
   TOTALS = {repos:0, unmerged:0, ov:0, prs:0, ciBad:0};
-  const [act, sup] = await Promise.all([Promise.all(ACTIVE.map(loadRepo)), Promise.all(SUPPORT.map(loadRepo))]);
+
+  // Load forge first to get ideas for Labs cards; load active+support in parallel
+  const [forgeIdeas, act, sup] = await Promise.all([
+    loadForge(),
+    Promise.all(ACTIVE.map(loadRepo)),
+    Promise.all(SUPPORT.map(loadRepo)),
+  ]);
+
   document.getElementById("active").innerHTML = act.map(cardHtml).join("");
   document.getElementById("support").innerHTML = sup.map(cardHtml).join("");
+
+  // Labs cards (fetches their own repo data + annotates with ideas from forge)
+  await loadLabs(forgeIdeas);
+
   renderSummary();
   await Promise.all([loadActions(), loadRun(), loadRate()]);
   document.getElementById("updated").textContent = "updated " + new Date().toLocaleTimeString();
