@@ -1,15 +1,546 @@
 {
-  "generatedAt": "2026-06-08T18:37:45.398Z",
+  "generatedAt": "2026-06-08T18:42:25.842Z",
   "owner": "Dukotah",
-  "authed": false,
-  "active": [],
-  "support": [],
+  "authed": true,
+  "active": [
+    {
+      "repo": "boots",
+      "note": "Cantrip — gamified coding academy",
+      "deploys": true,
+      "support": false,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "74e4410",
+        "msg": "seo: +12 long-tail posts (blog → 60) + related-posts internal linking",
+        "date": "2026-06-08T00:56:15Z"
+      },
+      "branches": [
+        {
+          "name": "claude/gifted-bell-hRQUW",
+          "ahead": 11,
+          "behind": 112
+        },
+        {
+          "name": "feat/courses-and-lesson-ux",
+          "ahead": 4,
+          "behind": 64
+        },
+        {
+          "name": "feat/ai-track-everyone",
+          "ahead": 3,
+          "behind": 48
+        },
+        {
+          "name": "claude/hopeful-bohr-4ZHrU",
+          "ahead": 2,
+          "behind": 73
+        },
+        {
+          "name": "claude/boots-learning-page-layout-pcKA2",
+          "ahead": 1,
+          "behind": 112
+        },
+        {
+          "name": "claude/code-visualizer",
+          "ahead": 1,
+          "behind": 92
+        },
+        {
+          "name": "claude/features-roadmap-v2",
+          "ahead": 1,
+          "behind": 95
+        },
+        {
+          "name": "claude/rooms-challenges",
+          "ahead": 1,
+          "behind": 95
+        },
+        {
+          "name": "claude/tutor-local-mobile-fix",
+          "ahead": 1,
+          "behind": 95
+        },
+        {
+          "name": "claude/code-quality",
+          "ahead": 0,
+          "behind": 90
+        },
+        {
+          "name": "curriculum-and-go-live-2026-06-04",
+          "ahead": 0,
+          "behind": 31
+        },
+        {
+          "name": "feat/gamification-expansion",
+          "ahead": 0,
+          "behind": 84
+        }
+      ],
+      "prs": [
+        {
+          "number": 20,
+          "title": "Reconcile: Pass-3 security hardening onto main",
+          "html_url": "https://github.com/Dukotah/boots/pull/20"
+        },
+        {
+          "number": 19,
+          "title": "feat(boss): per-track skills capstone Boss Fights",
+          "html_url": "https://github.com/Dukotah/boots/pull/19"
+        },
+        {
+          "number": 16,
+          "title": "New courses: Go, Rust & Docker (Systems & DevOps track)",
+          "html_url": "https://github.com/Dukotah/boots/pull/16"
+        }
+      ],
+      "ci": {
+        "status": "completed",
+        "conclusion": "success",
+        "name": "CI"
+      },
+      "stale": false
+    },
+    {
+      "repo": "Websites",
+      "note": "outreach demo-site factory",
+      "deploys": true,
+      "support": false,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "826c8f3",
+        "msg": "Refresh demo gallery: 4 fresh real-scrape demos, retire old batch",
+        "date": "2026-06-07T23:37:24Z"
+      },
+      "branches": [
+        {
+          "name": "driftwood-cowgirl-boutique",
+          "ahead": 4,
+          "behind": 65
+        },
+        {
+          "name": "claude/admiring-edison-VINrK",
+          "ahead": 3,
+          "behind": 65
+        },
+        {
+          "name": "claude/framework-builders-changes-NTybH",
+          "ahead": 3,
+          "behind": 9
+        },
+        {
+          "name": "claude/inspiring-mendel-hR9hM",
+          "ahead": 2,
+          "behind": 56
+        },
+        {
+          "name": "claude/confident-bohr-4pbdl",
+          "ahead": 1,
+          "behind": 8
+        },
+        {
+          "name": "bear-flag-towing",
+          "ahead": 0,
+          "behind": 63
+        },
+        {
+          "name": "claude/confident-archimedes-1XyAl",
+          "ahead": 0,
+          "behind": 40
+        },
+        {
+          "name": "claude/dazzling-thompson-3o1jC",
+          "ahead": 0,
+          "behind": 65
+        },
+        {
+          "name": "pecota-vineyard",
+          "ahead": 0,
+          "behind": 57
+        }
+      ],
+      "prs": [
+        {
+          "number": 1,
+          "title": "Claude/admiring edison vi nr k",
+          "html_url": "https://github.com/Dukotah/Websites/pull/1"
+        }
+      ],
+      "ci": {
+        "status": "completed",
+        "conclusion": "failure",
+        "name": "Deploy Winery Preview"
+      },
+      "stale": false
+    },
+    {
+      "repo": "Duke",
+      "note": "Copper Bay Tech agency site",
+      "deploys": true,
+      "support": false,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "c639ca4",
+        "msg": "fix(crm): demo-site link was dropped from outreach emails on send",
+        "date": "2026-06-08T05:31:34Z"
+      },
+      "branches": [
+        {
+          "name": "claude/charming-bell-xiYjn",
+          "ahead": 16,
+          "behind": 67
+        },
+        {
+          "name": "feat/hardening-sprint1",
+          "ahead": 4,
+          "behind": 92
+        },
+        {
+          "name": "claude/wonderful-wright-k9ZHC",
+          "ahead": 2,
+          "behind": 3
+        },
+        {
+          "name": "feat/website-links-to-crm",
+          "ahead": 2,
+          "behind": 92
+        },
+        {
+          "name": "claude/duke-website-upgrades-XgAsY",
+          "ahead": 1,
+          "behind": 88
+        }
+      ],
+      "prs": [],
+      "ci": {
+        "status": "completed",
+        "conclusion": "success",
+        "name": "CI"
+      },
+      "stale": false
+    },
+    {
+      "repo": "marina-booking-platform",
+      "note": "multi-tenant booking SaaS",
+      "deploys": true,
+      "support": false,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "6ac5ed2",
+        "msg": "feat(orders): customer self-service reschedule (2.1) — backend + live-verified",
+        "date": "2026-06-05T03:18:48Z"
+      },
+      "branches": [
+        {
+          "name": "phase-3-golive",
+          "ahead": 24,
+          "behind": 0
+        },
+        {
+          "name": "feat/finish-mvp-buildable",
+          "ahead": 6,
+          "behind": 0
+        },
+        {
+          "name": "claude/gate-cover-framework-fYgDN",
+          "ahead": 4,
+          "behind": 22
+        },
+        {
+          "name": "claude/built-rite-marine-site-avjcP",
+          "ahead": 1,
+          "behind": 15
+        },
+        {
+          "name": "overseer/2026-06-07",
+          "ahead": 1,
+          "behind": 0
+        }
+      ],
+      "prs": [],
+      "ci": null,
+      "stale": false
+    },
+    {
+      "repo": "apex-quant",
+      "note": "algo-trading framework (CI cron)",
+      "deploys": false,
+      "support": false,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "c699015",
+        "msg": "feat(risk): five fail-closed guardrails on the RiskManager (#14)",
+        "date": "2026-06-08T05:39:47Z"
+      },
+      "branches": [
+        {
+          "name": "overseer/2026-06-08",
+          "ahead": 5,
+          "behind": 41
+        },
+        {
+          "name": "feat/gauntlet-overfitting-gates",
+          "ahead": 2,
+          "behind": 81
+        },
+        {
+          "name": "feat/second-edge-value-momentum",
+          "ahead": 2,
+          "behind": 81
+        },
+        {
+          "name": "fix/wf-guard-and-docs",
+          "ahead": 2,
+          "behind": 4
+        },
+        {
+          "name": "feat/risk-hardening",
+          "ahead": 1,
+          "behind": 81
+        },
+        {
+          "name": "feat/status-export",
+          "ahead": 1,
+          "behind": 81
+        },
+        {
+          "name": "overseer/2026-06-07",
+          "ahead": 1,
+          "behind": 41
+        },
+        {
+          "name": "ci/quality-gates",
+          "ahead": 0,
+          "behind": 73
+        },
+        {
+          "name": "feat/module-toolkit",
+          "ahead": 0,
+          "behind": 44
+        },
+        {
+          "name": "feat/research-buildout",
+          "ahead": 0,
+          "behind": 34
+        },
+        {
+          "name": "feat/wire-ts-momentum",
+          "ahead": 0,
+          "behind": 42
+        },
+        {
+          "name": "phase-1-edge-validation",
+          "ahead": 0,
+          "behind": 64
+        }
+      ],
+      "prs": [
+        {
+          "number": 10,
+          "title": "research(strategy): ts_momentum_blend Gauntlet verdict — FAIL, +0.88 corr to trend → archived (F1)",
+          "html_url": "https://github.com/Dukotah/apex-quant/pull/10"
+        },
+        {
+          "number": 5,
+          "title": "feat(integration): status export for the apex-trader dashboard",
+          "html_url": "https://github.com/Dukotah/apex-quant/pull/5"
+        },
+        {
+          "number": 3,
+          "title": "feat(risk): exposure caps, stale-data guard, ATR/trailing stops, circuit breaker",
+          "html_url": "https://github.com/Dukotah/apex-quant/pull/3"
+        },
+        {
+          "number": 2,
+          "title": "feat(strategy): value+momentum composite — second-edge probe",
+          "html_url": "https://github.com/Dukotah/apex-quant/pull/2"
+        },
+        {
+          "number": 1,
+          "title": "feat(validation): overfitting-aware Gauntlet gates (DSR / PSR / PBO / capacity)",
+          "html_url": "https://github.com/Dukotah/apex-quant/pull/1"
+        }
+      ],
+      "ci": {
+        "status": "completed",
+        "conclusion": "failure",
+        "name": "CI"
+      },
+      "stale": false
+    }
+  ],
+  "support": [
+    {
+      "repo": "master-prompts",
+      "note": "prompt library + OVERSEER.md home",
+      "deploys": false,
+      "support": true,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "e3f4ed3",
+        "msg": "overseer Run N (2026-06-08): ShipSafe P2.1f skip-link-resolves check shipped",
+        "date": "2026-06-08T11:16:32Z"
+      },
+      "branches": [],
+      "prs": [],
+      "ci": null,
+      "stale": false
+    },
+    {
+      "repo": "sonoma-lead-scraper",
+      "note": "lead scraper → Duke CRM",
+      "deploys": false,
+      "support": true,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "9c3c5d3",
+        "msg": "Merge PR #5: bundled-data exe + deep one-time enrichment",
+        "date": "2026-06-01T21:42:57Z"
+      },
+      "branches": [
+        {
+          "name": "claude/simplytc-brokerage-leads-1oDgZ",
+          "ahead": 11,
+          "behind": 24
+        },
+        {
+          "name": "claude/lead-scraping-tool-status-16Wd9",
+          "ahead": 10,
+          "behind": 0
+        },
+        {
+          "name": "claude/repo-sandbox-viability-lrnxq",
+          "ahead": 2,
+          "behind": 0
+        },
+        {
+          "name": "claude/lead-data-sourcing-eyOeN",
+          "ahead": 0,
+          "behind": 8
+        }
+      ],
+      "prs": [],
+      "ci": {
+        "status": "completed",
+        "conclusion": "cancelled",
+        "name": "Website Audit"
+      },
+      "stale": false
+    },
+    {
+      "repo": "apex-trader",
+      "note": "private control surface for apex-quant",
+      "deploys": true,
+      "support": true,
+      "private": true,
+      "ok": false,
+      "err": "private — not accessible"
+    },
+    {
+      "repo": "forge",
+      "note": "autonomous product factory (Scout → greenlight → build)",
+      "deploys": false,
+      "support": true,
+      "private": false,
+      "ok": true,
+      "def": "main",
+      "last": {
+        "sha": "960d6c4",
+        "msg": "QuotePilot shipped: live URL + build record; idea -> shipped",
+        "date": "2026-06-08T01:20:34Z"
+      },
+      "branches": [],
+      "prs": [],
+      "ci": null,
+      "stale": false
+    }
+  ],
   "labs": [
     {
       "repo": "shipsafe",
       "emoji": "🛟",
       "liveUrl": "https://dukotah.github.io/shipsafe/",
-      "repoData": null,
+      "repoData": {
+        "repo": "shipsafe",
+        "note": "",
+        "deploys": false,
+        "support": false,
+        "private": false,
+        "ok": true,
+        "def": "main",
+        "last": {
+          "sha": "a86dff7",
+          "msg": "feat(p1): de-slop pass — self-exemplary a11y, polish, human copy, trust pages",
+          "date": "2026-06-08T05:31:42Z"
+        },
+        "branches": [
+          {
+            "name": "overseer/2026-06-08-p2f",
+            "ahead": 7,
+            "behind": 0
+          },
+          {
+            "name": "overseer/2026-06-08-p2e",
+            "ahead": 6,
+            "behind": 0
+          },
+          {
+            "name": "overseer/2026-06-08-p2d",
+            "ahead": 5,
+            "behind": 0
+          },
+          {
+            "name": "overseer/2026-06-08-p2c",
+            "ahead": 4,
+            "behind": 0
+          },
+          {
+            "name": "overseer/2026-06-08-p2b",
+            "ahead": 3,
+            "behind": 0
+          },
+          {
+            "name": "overseer/2026-06-08-p2a",
+            "ahead": 2,
+            "behind": 0
+          },
+          {
+            "name": "overseer/2026-06-08-p1.3",
+            "ahead": 1,
+            "behind": 1
+          },
+          {
+            "name": "overseer/2026-06-08-p1.5",
+            "ahead": 1,
+            "behind": 1
+          },
+          {
+            "name": "overseer/2026-06-08",
+            "ahead": 1,
+            "behind": 7
+          }
+        ],
+        "prs": [],
+        "ci": {
+          "status": "completed",
+          "conclusion": "success",
+          "name": "pages build and deployment"
+        },
+        "stale": false
+      },
       "idea": {
         "id": "vibe-app-health-checker",
         "title": "Vibe-Coded App Health Checker",
@@ -41,7 +572,28 @@
       "repo": "quotepilot",
       "emoji": "🏷️",
       "liveUrl": "https://dukotah.github.io/quotepilot/",
-      "repoData": null,
+      "repoData": {
+        "repo": "quotepilot",
+        "note": "",
+        "deploys": false,
+        "support": false,
+        "private": false,
+        "ok": true,
+        "def": "main",
+        "last": {
+          "sha": "ce23098",
+          "msg": "QuotePilot v1 — transparent home-project cost estimator (Copper Bay Labs)",
+          "date": "2026-06-08T01:19:28Z"
+        },
+        "branches": [],
+        "prs": [],
+        "ci": {
+          "status": "completed",
+          "conclusion": "success",
+          "name": "pages build and deployment"
+        },
+        "stale": false
+      },
       "idea": {
         "id": "contractor-quote-page-agency-install",
         "title": "Contractor Instant-Quote Page (agency-install)",
@@ -325,9 +877,12 @@
       "**Sonoma scraper:** local main is 24 behind origin — pull/sync."
     ],
     "actionsError": null,
-    "run": null,
-    "runError": "Couldn't read runs (HTTP 403).",
+    "run": {
+      "name": "overseer-2026-06-08n.md",
+      "html_url": "https://github.com/Dukotah/master-prompts/blob/main/runs/overseer-2026-06-08n.md",
+      "excerpt": "# Overseer Run N — 2026-06-08 (14th run this date)\n\n**Executed:** 2026-06-08 UTC  \n**Rotation:** UTC day-of-year 159 mod 6 = 3 → marina-booking-platform (BLOCKED, both items require `phase-3-golive` merge)  \n→ skip to index 4 → apex-quant (BLOCKED, branch queue too long to add safely)  \n→ skip to index 5 → **shipsafe** ✓ (unblocked)\n\n---\n\n## Step 2 — Reconcile\n\n| Repo | main SHA | vs OVERSEER | Notable in-flight branches |\n|------|----------|-------------|-----------------------------|\n| boots | `74e44106` | ✓ matches | `feat/track-boss-fights`, `overseer/2026-06-07` (superseded) |\n| Websites | `826c8f3b` | ✓ matches | `driftwood-cowgirl-boutique`, `pecota-vineyard` |\n| Duke | `c639ca4b` | ✓ matches | `feat/hardening-sprint1`, `feat/website-links-to-crm` |\n| marina | `6ac5ed2d` | ✓ matches | `phase-3-golive` (24 ahead), `overseer/2026-06-07` (1 ahead) |\n| apex-quant | `c699015a` | ✓ matches | `overseer/2026-06-07` (fa1742b), `overseer/2026-06-08` (b202e1d) — both ~40+ behind main |\n| shipsafe | `a86dff79` | ✓ matches | p2a…p2e chain intact (5 stacked 1-commit branches); old p1.3/p1.5/2026-06-08 superseded |\n\nAll six main SHAs match OVERSEER.md exactly. No drift detected.\n\n---\n\n## Step 3 — Target: ShipSafe\n\n**Item selected:** P2.1f — Skip link resolves (WCAG 2.4.1 Bypass Blocks, Level A)\n\nFrom OVERSEER.md \"Next buildable\": *P2.1f — skip-link destination check (verify that the `href`\nin `<a class=\"skip\">` resolves to an element that exists in the DOM, WCAG 2.4.1 Level A)."
+    },
+    "runError": null,
     "runNote": null
-  },
-  "pending": true
+  }
 }
